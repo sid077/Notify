@@ -1,0 +1,28 @@
+<resources>
+    <string name="app_name">Notify</string>
+    <string name="msgwhatsapp">Sir, you have a new whatsapp message</string>
+    <string name="title_activity_settings">Settings</string>
+
+    <!-- Preference Titles -->
+    <string name="notification_header">Notifications</string>
+    <string name="sync_header">Sync</string>
+
+    <!-- Messages Preferences -->
+    <string name="signature_title">Your signature</string>
+    <string name="reply_title">Default reply action</string>
+
+    <!-- Sync Preferences -->
+    <string name="sync_title">Sync email periodically</string>
+    <string name="attachment_title">Download incoming attachments</string>
+    <string name="attachment_summary_on">Automatically download attachments for incoming emails
+    </string>
+    <string name="attachment_summary_off">Only download attachments when manually requested</string>
+    <string name="title_screenoff_settings">Announce only is screen is off</string>
+    <string name="header_announcer_settings">Announcer settings</string>
+    <string name="title_sleep_time_settings">Sleep time</string>
+    <string name="summary_sleep_time_settings">I will not disturb while you are asleep</string>
+    <string name="title_change_announcer">Change Announcer</string>
+    <string name="msg_info1">Say \"stop notify\" to your google assistant to keep me silent</string>
+    <string name="toggle_main_off">I\'m on rest for now.\n Touch to switch announcer on</string>
+    <string name="toggle_main_on">Sit back and relax, I\'ll notify if notification comes.\n Touch to switch announcer off</string>
+</resources>

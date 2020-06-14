@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <array name="preloaded_fonts" translatable="false">
+        <item>@font/eczar</item>
+        <item>@font/plaster</item>
+        <item>@font/playfair_display_sc</item>
+        <item>@font/unlock</item>
+        <item>@font/vast_shadow</item>
+    </array>
+</resources>

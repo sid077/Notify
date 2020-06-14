@@ -1,0 +1,68 @@
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <PreferenceCategory app:title="@string/notification_header">
+        <SwitchPreferenceCompat
+            android:layout_width="match_parent"
+            app:defaultValue="true"
+            app:key="isScreenOffEnabled"
+            app:summary="@string/title_screenoff_settings"
+             />
+        <SwitchPreferenceCompat
+            android:layout_width="match_parent"
+            app:defaultValue="true"
+            app:key="isSelectedAppsEnabled"
+
+            app:summary="Use announcer only for selected apps" />
+    </PreferenceCategory>
+    <PreferenceCategory app:title="@string/header_announcer_settings">
+        <Preference
+            app:key="announcer"
+                    app:fragment="com.example.notify.fragments.VoiceListFragment"
+                    app:title="@string/title_change_announcer"
+                   />
+        <com.example.notify.fragments.SleepPreference
+            android:key="sleepTime"
+            app:title="@string/title_sleep_time_settings"
+            app:summary="@string/summary_sleep_time_settings"
+            android:defaultValue="90" />
+        <SwitchPreferenceCompat
+            app:key="translator"
+            app:title="Speak in native language"
+            app:summary="I'll speak in the selected language"
+            app:defaultValue="false"/>
+
+
+        <SeekBarPreference
+            app:title="Speed"
+            app:key="speed"
+            android:max="100"
+            app:min="1"
+            app:defaultValue="50"
+            app:summary="Tell me how fast I should speak "/>
+
+    </PreferenceCategory>
+    <PreferenceCategory app:title="Info">
+        <Preference app:title="@string/msg_info1"
+            app:summary="@string/summary_sleep_time_settings"
+            app:key="info1"/>
+    </PreferenceCategory>
+
+<!--        <EditTextPreference-->
+<!--            app:key="signature"-->
+<!--            app:title="@string/signature_title"-->
+<!--            app:useSimpleSummaryProvider="true" />-->
+
+<!--        <ListPreference-->
+<!--            app:defaultValue="reply"-->
+<!--            app:entries="@array/reply_entries"-->
+<!--            app:entryValues="@array/reply_values"-->
+<!--            app:key="reply"-->
+<!--            app:title="@string/reply_title"-->
+<!--            app:useSimpleSummaryProvider="true" />-->
+
+
+
+
+
+</PreferenceScreen>

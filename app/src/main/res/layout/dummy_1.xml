@@ -1,0 +1,11 @@
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/screenshot_"
+    android:layout_width="941.85dp"
+    android:layout_height="700dp"
+    android:layout_alignParentLeft="true"
+    android:layout_marginLeft="69dp"
+    android:layout_alignParentTop="true"
+    android:layout_marginTop="188dp"
+    android:background="@drawable/screenshot_"
+    />

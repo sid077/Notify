@@ -22,7 +22,8 @@
     <string name="title_sleep_time_settings">Sleep time</string>
     <string name="summary_sleep_time_settings">I will not disturb while you are asleep</string>
     <string name="title_change_announcer">Change Announcer</string>
-    <string name="msg_info1">Say \"stop notify\" to your google assistant to keep me silent</string>
+    <string name="msg_info1">You\'re privacy is always protected</string>
     <string name="toggle_main_off">I\'m on rest for now.\n Touch to switch announcer on</string>
     <string name="toggle_main_on">Sit back and relax, I\'ll notify if notification comes.\n Touch to switch announcer off</string>
+    <string name="privacy_info">None of your notifications are stored by us</string>
 </resources>

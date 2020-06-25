@@ -1,7 +1,6 @@
 package com.example.notify.activities;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.cardview.widget.CardView;
@@ -15,37 +14,23 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.animation.Animator;
-import android.animation.ValueAnimator;
 import android.app.ActivityManager;
-import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
-import android.content.SharedPreferences;
 import android.content.pm.ResolveInfo;
-import android.graphics.Color;
 import android.graphics.drawable.TransitionDrawable;
-import android.media.MediaPlayer;
-import android.net.sip.SipSession;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
-import android.speech.tts.TextToSpeech;
-import android.speech.tts.Voice;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewAnimationUtils;
 import android.view.ViewGroup;
-import android.view.Window;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.widget.CompoundButton;
-import android.widget.Switch;
-import android.widget.TabHost;
 import android.widget.TextView;
 
 import com.example.notify.NotificationServiceList;
@@ -53,18 +38,16 @@ import com.example.notify.R;
 import com.example.notify.adapters.RecyclerAdapterAppList;
 import com.example.notify.listeners.RecyclerItemClickListener;
 import com.example.notify.models.AppListPojo;
-import com.example.notify.recievers.screenStateReciever;
 import com.example.notify.repositories.AppDatabase;
 import com.example.notify.viewmodel.MainViewModel;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.switchmaterial.SwitchMaterial;
+import com.google.firebase.FirebaseApp;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
-;import static android.graphics.Color.WHITE;
+;
 
 public class MainActivity extends AppCompatActivity {
     RecyclerView recyclerViewAppList ;
@@ -153,7 +136,9 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_main);
+        FirebaseApp.initializeApp(getApplicationContext());
         Animation bottomUp = AnimationUtils.loadAnimation(getApplicationContext(),R.anim.bottom_up);
         ViewGroup hiddenPanel = findViewById(R.id.contraintMain);
 
@@ -177,7 +162,9 @@ public class MainActivity extends AppCompatActivity {
         if(!PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).getBoolean("isNewUser",false)){
         addCoachMark();
         }
-
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            startForegroundService(new Intent(MainActivity.this,NotificationServiceList.class));
+        }
 
 
         cardViewToggle.setOnTouchListener(new View.OnTouchListener() {

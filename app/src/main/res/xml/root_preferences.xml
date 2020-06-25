@@ -44,9 +44,18 @@
     </PreferenceCategory>
     <PreferenceCategory app:title="Info">
         <Preference app:title="@string/msg_info1"
-            app:summary="@string/summary_sleep_time_settings"
+            app:summary="@string/privacy_info"
             app:key="info1"/>
+        <Preference app:title="Contact"
+            app:key="contact">
+
+
+        </Preference>
+        <EditTextPreference
+            app:key="comments"
+            app:title="Review the app"/>
     </PreferenceCategory>
+
 
 <!--        <EditTextPreference-->
 <!--            app:key="signature"-->

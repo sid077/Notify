@@ -18,6 +18,7 @@ import android.widget.ListView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.preference.DialogPreference;
 import androidx.preference.ListPreference;
 import androidx.preference.ListPreferenceDialogFragmentCompat;
@@ -27,9 +28,19 @@ import androidx.preference.PreferenceManager;
 import com.example.notify.R;
 import com.example.notify.adapters.LanguagesAdapter;
 import com.example.notify.models.VoicePojo;
+import com.example.notify.models.VoicePojoRoom;
+import com.example.notify.viewmodel.MainViewModel;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.mlkit.common.model.DownloadConditions;
+import com.google.mlkit.nl.translate.TranslateLanguage;
+import com.google.mlkit.nl.translate.Translation;
+import com.google.mlkit.nl.translate.Translator;
+import com.google.mlkit.nl.translate.TranslatorOptions;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 
@@ -39,9 +50,10 @@ public class VoiceListFragment extends PreferenceFragmentCompat{
 
     private ListView listView;
     private TextToSpeech textToSpeech;
+    private Voice selectedVoice;
+    MainViewModel viewModel;
 
-
-//        @Override
+    //        @Override
 //    protected void onPrepareDialogBuilder(final AlertDialog.Builder builder) {
 //        super.onPrepareDialogBuilder(builder);
 //
@@ -50,6 +62,7 @@ public class VoiceListFragment extends PreferenceFragmentCompat{
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View v= inflater.inflate(R.layout.list_voices,container,false);
         listView = v.findViewById(R.id.listViewVoices);
+        viewModel  = new ViewModelProvider(this).get(MainViewModel.class);
         return v;
     }
 
@@ -87,6 +100,7 @@ public class VoiceListFragment extends PreferenceFragmentCompat{
                 listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                     @Override
                     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                        selectedVoice = voiceArrayList.get(position);
                         textToSpeech.setVoice(voiceArrayList.get(position));
                         textToSpeech.speak("Hey There, I'm your notification announcer",TextToSpeech.QUEUE_ADD,null);
                         PreferenceManager.getDefaultSharedPreferences(getActivity().getApplicationContext()).edit().putString("announcerName",voiceArrayList.get(position).getName()).apply();
@@ -112,8 +126,42 @@ public class VoiceListFragment extends PreferenceFragmentCompat{
     @Override
     public void onDestroy() {
         super.onDestroy();
+        List<VoicePojoRoom> voiceArrayList = new ArrayList<>();
+        VoicePojoRoom voicePojoRoom = new VoicePojoRoom();
+        voicePojoRoom.setVoice(selectedVoice);
+        voiceArrayList.add(voicePojoRoom);
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+               // viewModel.getDatabaseInstance().voiceDao().deleteAll();
+                viewModel.getDatabaseInstance().voiceDao().insertFirstVoice(voicePojoRoom);
+                //translator
+                TranslatorOptions translatorOptions = new TranslatorOptions.Builder().setSourceLanguage(TranslateLanguage.ENGLISH).setTargetLanguage(TranslateLanguage.fromLanguageTag(selectedVoice.getLocale().getLanguage())).build();
+                Translator translator = Translation.getClient(translatorOptions);
+                DownloadConditions conditions = new DownloadConditions.Builder().build();
+                translator.downloadModelIfNeeded(conditions).addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Log.d("translator","model downlaoded");
+
+
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        e.printStackTrace();
+                    }
+                });
+
+            }
+
+        }).start();
         if(textToSpeech!=null)
         textToSpeech.shutdown();
+
+//
+
+
     }
 }
 

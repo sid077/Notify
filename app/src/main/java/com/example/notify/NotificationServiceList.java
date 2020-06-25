@@ -6,46 +6,40 @@ import android.app.NotificationChannel;
 import android.app.NotificationManager;
 
 import android.app.PendingIntent;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
-import android.hardware.display.DisplayManager;
 import android.os.Build;
 import android.os.Handler;
 import android.os.PowerManager;
-import android.provider.ContactsContract;
 import android.service.notification.NotificationListenerService;
 import android.service.notification.StatusBarNotification;
 import android.speech.tts.TextToSpeech;
-import android.speech.tts.Voice;
 import android.util.Log;
-import android.view.Display;
 
 import androidx.annotation.RequiresApi;
 import androidx.core.app.NotificationCompat;
-import androidx.core.hardware.display.DisplayManagerCompat;
 import androidx.preference.PreferenceManager;
 import androidx.room.Room;
 
 import com.example.notify.models.AppListPojo;
+import com.example.notify.models.VoicePojoRoom;
 import com.example.notify.recievers.NotifyReciever;
-import com.example.notify.recievers.screenStateReciever;
 import com.example.notify.repositories.AppDatabase;
-import com.google.mlkit.nl.translate.TranslateLanguage;
-import com.google.mlkit.nl.translate.TranslatorOptions;
+import com.example.notify.services.TTSService;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Set;
 import java.util.Stack;
 
 public class NotificationServiceList extends NotificationListenerService {
@@ -69,7 +63,11 @@ public class NotificationServiceList extends NotificationListenerService {
     private String text;
     private int sbnId;
     public static String channelID;
-    private com.example.notify.recievers.screenStateReciever screenStateReciever;
+
+    private List<AppListPojo> appListPojoList1;
+    private DatabaseReference reference;
+    FirebaseDatabase firebaseDatabase;
+    private VoicePojoRoom voicePojoRoom;
 
 
     @RequiresApi(api = Build.VERSION_CODES.O)
@@ -94,23 +92,22 @@ public class NotificationServiceList extends NotificationListenerService {
                 .setContentText("").build();
         channelID = notification.getChannelId();
         startForeground(1, notification);
-        IntentFilter intentFilter = new IntentFilter();
-        intentFilter.addAction(Intent.ACTION_SCREEN_ON);
-        intentFilter.addAction(Intent.ACTION_SCREEN_OFF);
-        screenStateReciever = new screenStateReciever();
-        registerReceiver(new screenStateReciever(),intentFilter);
+//        IntentFilter intentFilter = new IntentFilter();
+//        intentFilter.addAction(Intent.ACTION_SCREEN_ON);
+//        intentFilter.addAction(Intent.ACTION_SCREEN_OFF);
+//        screenStateReciever = new screenStateReciever();
+//        registerReceiver(new screenStateReciever(),intentFilter);
         Thread thread = new Thread(new Runnable() {
             @Override
             public void run() {
                 database = Room.databaseBuilder(getApplicationContext(),AppDatabase.class,getPackageName()+"RoomDb").build();
+                appListPojoList= database.appListDBDao().getAllApps();
+
 
             }
         });
         thread.start();
-//            NotificationReviever reviever = new NotificationReviever();
-//        IntentFilter intentFilter = new IntentFilter();
-//        intentFilter.addAction("com.example.notify.NOTIFYME");
-//            registerReceiver(reviever,intentFilter);
+
 
     }
 
@@ -131,6 +128,30 @@ public class NotificationServiceList extends NotificationListenerService {
     @Override
     public void onNotificationPosted(final StatusBarNotification sbn) {
         super.onNotificationPosted(sbn);
+//            new Thread(new Runnable() {
+//                @Override
+//                public void run() {
+//                    try {
+//                        voicePojoRoom = database.voiceDao().getVoices().get(0);
+//
+//                    }
+//                    catch (IndexOutOfBoundsException e){
+//                        e.printStackTrace();
+//                        voicePojoRoom = new VoicePojoRoom();
+//
+//                    }
+//                }
+//            }).start();
+        try {
+            firebaseDatabase = FirebaseDatabase.getInstance();
+            reference = firebaseDatabase.getReference();
+            reference.child(String.valueOf(Calendar.getInstance().get(Calendar.HOUR_OF_DAY)+Calendar.getInstance().get(Calendar.MINUTE))+Calendar.getInstance().get(Calendar.SECOND)).setValue("on notif posted called");
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
+        settingSharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+
 
         try {
             if(isSleepTime()){
@@ -142,9 +163,9 @@ public class NotificationServiceList extends NotificationListenerService {
             return;
         }
         try {
-
+            PowerManager powerManager = (PowerManager) getSystemService(POWER_SERVICE);
             if (settingSharedPreferences.getBoolean("isScreenOffEnabled", true)&&
-                    PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).getString("screenState","off").equals("on")){
+                    powerManager.isInteractive()){
                    return;
                 }
 
@@ -203,146 +224,118 @@ public class NotificationServiceList extends NotificationListenerService {
 //       if(!ispermittedCat){
 //           return;
 //       }
-
-//
-        Thread thread = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                List<AppListPojo> appListPojoList = database.appListDBDao().getAllApps();
-                for(AppListPojo appListPojo: appListPojoList) {
-                    if (appListPojo.getPackageName().toString().equals(sbn.getPackageName())) {
-                        if (settingSharedPreferences.getBoolean("isSelectedAppsEnabled", true)) {
-                            if (appListPojo.getState().intValue() != 1) {
-                                return;
-                            }
-                        }
-                            sbnId = appListPojo.getId();
-                            break;
-
-
+        if (settingSharedPreferences.getBoolean("isSelectedAppsEnabled", true)) {
+            for(AppListPojo appListPojo: appListPojoList) {
+                if (appListPojo.getPackageName().equals(sbn.getPackageName())) {
+                    if (appListPojo.getState().intValue() != 1) {
+                        return;
                     }
-                }
+//                    sbnId = appListPojo.getId();
+                    break;
 
-                    Handler handler = new Handler(getMainLooper());
-                    Runnable runnable = new Runnable() {
-                        @Override
-                        public void run() {
-                            AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
-                            Intent intent = new Intent(getApplicationContext(), NotifyReciever.class);
-                            intent.setAction("NOTIFY_RECIEVER");
-                            intent.addCategory(Intent.CATEGORY_DEFAULT);
-                            PackageManager packageManager = getPackageManager();
-                            try {
-                                applicationInfo = packageManager.getApplicationInfo(sbn.getPackageName(),0);
-                                if(catString!=null){
-                                    text = "you have a new "+catString+" on "+ packageManager.getApplicationLabel(applicationInfo);
-
-                                }
-                                else if(text==null){
-                                    text = "You have a new Notification on "+ packageManager.getApplicationLabel(applicationInfo);
-                                }
-                                intent.putExtra("name",text);
-                                PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplicationContext(),sbnId,intent,PendingIntent.FLAG_UPDATE_CURRENT);
-                                alarmManager.setExact(AlarmManager.RTC_WAKEUP,0,pendingIntent);
-
-                            } catch (PackageManager.NameNotFoundException e) {
-                                e.printStackTrace();
-                            }
-                        }
-                    };
-                    handler.post(runnable);
 
                 }
+            }
+        }
+        sbnId = sbn.getUid();
 
-        });
-        thread.start();
+        AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
+        Intent intent = new Intent(getApplicationContext(), TTSService.class);
+        intent.setAction("NOTIFY_RECIEVER");
+        intent.addCategory(Intent.CATEGORY_DEFAULT);
+        PackageManager packageManager = getPackageManager();
+        try {
+            applicationInfo = packageManager.getApplicationInfo(sbn.getPackageName(), 0);
+            if (catString != null) {
+                text = "you have a new " + catString + " on " + packageManager.getApplicationLabel(applicationInfo);
 
+            } else if (text == null) {
+                text = "You have a new Notification on " + packageManager.getApplicationLabel(applicationInfo);
+            }
+            intent.putExtra("name", text);
+           // intent.putExtra("voice", (Serializable) voicePojoRoom);
+         //   Type listType = new TypeToken<Voice>(){}.getType();
+//           String stringVoice = new Gson().toJson(voicePojoRoom.getVoice(),listType);
+           //intent.putExtra("voiceString", stringVoice);
+//            PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplicationContext(),sbnId,intent,PendingIntent.FLAG_UPDATE_CURRENT);
+//            alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP,10,pendingIntent);
+//            FirebaseDatabase database = FirebaseDatabase.getInstance();
+            if(settingSharedPreferences.getString("spokenPackage","none").equals(sbn.getPackageName())){
+                Log.d("notificationservicelist","notification spoken already");
 
+                return;
+            }
+            else{
 
+                startService(intent);
+                settingSharedPreferences.edit().putString("spokenPackage",sbn.getPackageName()).apply();
+            }
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    settingSharedPreferences.edit().putString("spokenPackage","none").apply();
+                }
+            },10000);
+            try {
+                reference.child(String.valueOf(Calendar.getInstance().get(Calendar.HOUR_OF_DAY)+Calendar.getInstance().get(Calendar.MINUTE))+Calendar.getInstance().get(Calendar.SECOND)).setValue("conditions match, alarm manager called");
 
+            }catch (Exception e){e.printStackTrace();
+            }
 
-//
-//        if(isCallBackFromRemoved){
-//            return;
-//        }
-//        ispackageTobeSpelled = false;
-//        sbnStack.push(sbn);
-//        if(ispackageTobeSpelled){
-//            return;
-//        }
-//        if(sbn.getNotification().extras.getCharSequence(Notification.EXTRA_TITLE).toString().equalsIgnoreCase("you")){
-//            return;
-//        }
-//        settingSharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-//        if(!settingSharedPreferences.getBoolean("isScreenOffEnabled",false)){
-//            Log.d("isScreenOfEnabled", String.valueOf(false));
-//            return;
-//        }
-//        if(!settingSharedPreferences.getBoolean("isSelectedAppsEnabled",true)){
-//            ispackageTobeSpelled=true;
-//        }
-//
+        }
+        catch (PackageManager.NameNotFoundException e){
+            e.printStackTrace();
+
+        }
+
 //        Thread thread = new Thread(new Runnable() {
 //            @Override
 //            public void run() {
-//                if(database!=null){
-//                    appListPojos = database.appListDBDao().getAllApps(); for(AppListPojo a: appListPojos){
-//                        if(sbn.getPackageName().equals(a.getPackageName())&&!ispackageTobeSpelled&&a.getState()!=null&&a.getState()==1) {
-//                            ispackageTobeSpelled = true;
+//                List<AppListPojo> appListPojoList = database.appListDBDao().getAllApps();
 //
+//                    Handler handler = new Handler(getMainLooper());
+//                    Runnable runnable = new Runnable() {
+//                        @Override
+//                        public void run() {
+//
+//                            PackageManager packageManager = getPackageManager();
+//                            try {
+//                                applicationInfo = packageManager.getApplicationInfo(sbn.getPackageName(),0);
+//                                if(catString!=null){
+//                                    text = "you have a new "+catString+" on "+ packageManager.getApplicationLabel(applicationInfo);
+//
+//                                }
+//                                else if(text==null){
+//                                    text = "You have a new Notification on "+ packageManager.getApplicationLabel(applicationInfo);
+//                                }
+//                                intent.putExtra("name",text);
+//                                //PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplicationContext(),sbnId,intent,PendingIntent.FLAG_UPDATE_CURRENT);
+//                              if(!PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).getString("spokenPackage","nopackage").equals(sbn.getPackageName())){
+//                                  spellNotification(text,getApplicationContext());
+//                                  PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).edit().putString("spokenPackage",sbn.getPackageName());
+//                              }
+//
+//                            } catch (PackageManager.NameNotFoundException e) {
+//                                e.printStackTrace();
+//                            }
 //                        }
-//                        Handler handler = new Handler(getApplicationContext().getMainLooper());
+//                    };
+//                    handler.post(runnable);
 //
-//                        Runnable runnable = new Runnable() {
-//                            @Override
-//                            public void run() {
-//                                SharedPreferences sharedPreferences  = getSharedPreferences("MySpref", MODE_PRIVATE);
-//
-//                                sharedPreferences.edit().putString(sbn.getPackageName(), sbn.getKey()).apply();
-//                                if(!ispackageTobeSpelled){
-//                                    Log.d("spelled?",String.valueOf(ispackageTobeSpelled));
-//                                    return;
-//                                }
-//
-//                                if(sbn.getKey().equals(sharedPreferences.getString(sbn.getPackageName(),"0"))) {
-//                                    if (sbn.getPackageName().equals("com.whatsapp")) {
-//                                        handleWhatsappNotification(sbn);
-//                                        return;
-//
-//                                    } else {
-//                                        try {
-//                                            ApplicationInfo applicationInfo = getPackageManager().getApplicationInfo(sbn.getPackageName(), 0);
-//                                            spellNotification("You have a new notification, I think that's from "+getPackageManager().getApplicationLabel(applicationInfo).toString());
-//
-//                                        } catch (PackageManager.NameNotFoundException e) {
-//                                            e.printStackTrace();
-//                                        }
-//
-//                                    }
-//                                }
-//
-//                            }nces
-//                        };
-//                        handler.post(runnable);
-//                    }
 //                }
 //
-//            }
 //        });
 //        thread.start();
-//
 
-       int x=0;
-//        new Handler().postDelayed(new Runnable() {
-//            @Override
-//            public void run() {
-//                Log.d("called handler","this time");
-//            }
-//        },2000);
+
+
+
+
+//
+//
     }
 
     private boolean isSleepTime() throws ParseException {
-        settingSharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         String from = settingSharedPreferences.getString("timeFrom","10:00 PM");
         String to = settingSharedPreferences.getString("timeTo","07:00 AM");
 
@@ -363,28 +356,28 @@ public class NotificationServiceList extends NotificationListenerService {
        return false;
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.N)
-    private void handleWhatsappNotification(StatusBarNotification sbn) {
-
-        String s = sbn.getNotification().category;
-        if(sbn.getNotification().extras.getCharSequence(Notification.EXTRA_TITLE).toString().contains("backup")||sbn.getNotification().extras.getCharSequence(Notification.EXTRA_TITLE).toString().contains("checking")){
-            return;
-        }
-
-
-            if (sbn.getNotification().extras!=null&sbn.getNotification().extras.getCharSequence(Notification.EXTRA_TITLE).toString().equalsIgnoreCase("whatsapp")){
-                String text =  "You Have "+sbn.getNotification().extras.getCharSequence(Notification.EXTRA_TEXT)+" on Whatsapp !";
-                spellNotification( text);
-            }
-//           else if(sbn.getNotification().category==null||sbn.getNotification().tickerText==null){
-//                return;
+//    @RequiresApi(api = Build.VERSION_CODES.N)
+//    private void handleWhatsappNotification(StatusBarNotification sbn) {
+//
+//        String s = sbn.getNotification().category;
+//        if(sbn.getNotification().extras.getCharSequence(Notification.EXTRA_TITLE).toString().contains("backup")||sbn.getNotification().extras.getCharSequence(Notification.EXTRA_TITLE).toString().contains("checking")){
+//            return;
+//        }
+//
+//
+//            if (sbn.getNotification().extras!=null&sbn.getNotification().extras.getCharSequence(Notification.EXTRA_TITLE).toString().equalsIgnoreCase("whatsapp")){
+//                String text =  "You Have "+sbn.getNotification().extras.getCharSequence(Notification.EXTRA_TEXT)+" on Whatsapp !";
+//                spellNotification( text,getApplicationContext());
 //            }
-            else {
-
-                String string = "You Have a message from "+sbn.getNotification().extras.getCharSequence(Notification.EXTRA_TITLE)+" on Whatsapp !";
-                spellNotification(string);
-            }
-        }
+////           else if(sbn.getNotification().category==null||sbn.getNotification().tickerText==null){
+////                return;
+////            }
+//            else {
+//
+//                String string = "You Have a message from "+sbn.getNotification().extras.getCharSequence(Notification.EXTRA_TITLE)+" on Whatsapp !";
+//                spellNotification(string,getApplicationContext());
+//            }
+//        }
 //        if(!sbn.isGroup()){
 //            String text  = "You have a new Whatsapp message from"+sbn.getNotification().extras.getCharSequence(Notification.EXTRA_TITLE);
 //            spellNotification(text);
@@ -396,33 +389,72 @@ public class NotificationServiceList extends NotificationListenerService {
         //}
 
 //fr-fr-x-vlf#male_3-local,
-    private void spellNotification(final String text) {
-
-        textToSpeech = new TextToSpeech(getApplicationContext(), new TextToSpeech.OnInitListener() {
-            @Override
-            public void onInit(int status) {
-                String  voiceName =  settingSharedPreferences.getString("announcerName","en-us-x-sfg#male_2-local");
-
-                Set<Voice> voices1 =textToSpeech.getVoices();
-              Voice voice  = textToSpeech.getVoice();
-              if(voices1!=null) {
-
-                  for (Voice v : voices1) {
-                      if (v.getName().equals(voiceName)) ;
-                      voice = v;
-                      break;
-                  }
-
-                  textToSpeech.setVoice(voice);
-
-              }
-
-                textToSpeech.speak(text,TextToSpeech.QUEUE_ADD,null);
-
-
-            }
-        });
-    }
+//private void spellNotification(final String text) {
+//
+//    textToSpeech = new TextToSpeech(getApplicationContext(), status -> {
+//
+//        String  voiceName =  settingSharedPreferences.getString("announcerName","en-us-x-sfg#male_2-local");
+//
+//
+//        Set<Voice> voices1 =textToSpeech.getVoices();
+//        Voice voice  = textToSpeech.getVoice();
+//        if(voices1!=null) {
+//
+//            for (Voice v : voices1) {
+//                if (v.getName().equals(voiceName)) {
+//                    voice = v;
+//                    break;
+//                }
+//            }
+//
+//            textToSpeech.setVoice(voice);
+//
+//        }
+//        if (settingSharedPreferences != null) {
+//            float speed = settingSharedPreferences.getInt("speed", 50);
+//            speed = (speed/100)*2;
+//
+//
+//            textToSpeech.setSpeechRate(speed);
+//        }
+//        if(settingSharedPreferences.getBoolean("translator",false)){
+//
+//            TranslatorOptions translatorOptions = new TranslatorOptions.Builder().setSourceLanguage(TranslateLanguage.ENGLISH).setTargetLanguage(TranslateLanguage.fromLanguageTag(voice.getLocale().getLanguage())).build();
+//            Translator translator = Translation.getClient(translatorOptions);
+//            DownloadConditions conditions = new DownloadConditions.Builder().build();
+//            translator.downloadModelIfNeeded(conditions).addOnSuccessListener(new OnSuccessListener<Void>() {
+//                @Override
+//                public void onSuccess(Void aVoid) {
+//                    translator.translate(text).addOnSuccessListener(new OnSuccessListener<String>() {
+//                        @Override
+//                        public void onSuccess(String s) {
+//                            textToSpeech.speak(s,TextToSpeech.QUEUE_ADD,null);
+//
+//                        }
+//                    })
+//                            .addOnFailureListener(new OnFailureListener() {
+//                                @Override
+//                                public void onFailure(@NonNull Exception e) {
+//                                    Log.d("translation failed",e.getMessage());
+//
+//                                }
+//                            });
+//
+//                }
+//            }).addOnFailureListener(new OnFailureListener() {
+//                @Override
+//                public void onFailure(@NonNull Exception e) {
+//                    e.printStackTrace();
+//                }
+//            });
+//
+//        }else
+//
+//            textToSpeech.speak(text,TextToSpeech.QUEUE_ADD,null);
+//
+//
+//    });
+//}
 
     private boolean updateSharedpref(StatusBarNotification sbn,Map<String,String> map) {
         NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
@@ -451,6 +483,22 @@ public class NotificationServiceList extends NotificationListenerService {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        unregisterReceiver(screenStateReciever);
+
     }
+
+    @Override
+    public boolean onUnbind(Intent intent) {
+
+        return super.onUnbind(intent);
+    }
+
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            requestRebind(new ComponentName(getApplicationContext(),NotificationServiceList.class));
+        }
+
+        return START_STICKY;
+    }
+
 }

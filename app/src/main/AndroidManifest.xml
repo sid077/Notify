@@ -3,6 +3,8 @@
     package="com.example.notify">
 
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.WAKE_LOCK"/>
+
 
     <application
         android:allowBackup="true"
@@ -34,6 +36,9 @@
                 <action android:name="android.service.notification.NotificationListenerService" />
             </intent-filter>
         </service>
+        <service android:name=".services.TTSService"
+            />
+
 
         <receiver
             android:name=".recievers.NotifyReciever"
@@ -45,11 +50,12 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </receiver>
-        <receiver android:name=".recievers.screenStateReciever">
+        <receiver android:name=".recievers.ScreenStateReciever" android:enabled="true"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.SCREEN_OFF"/>
                 <action android:name="android.intent.action.SCREEN_ON"/>
-                <category android:name="android.intent.category.DEFAULT"/>
+
             </intent-filter>
         </receiver>
 

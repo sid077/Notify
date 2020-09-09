@@ -21,6 +21,7 @@
             android:background="@drawable/transition_main_1"
             android:foregroundGravity="center"
             app:cardCornerRadius="2dp"
+            android:elevation="2dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.49"
             app:layout_constraintStart_toStartOf="parent"
@@ -36,36 +37,77 @@
                     android:id="@+id/toolbarMain"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginStart="4dp"
+                    android:layout_marginTop="2dp"
+                    android:layout_marginEnd="4dp"
                     android:background="?attr/colorPrimary"
+                    android:elevation="0dp"
                     android:minHeight="?attr/actionBarSize"
                     android:theme="@style/AppTheme"
-                    android:elevation="0dp"
+                    android:visibility="invisible"
+
+
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="1.0"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
-
-
                     app:title="@string/app_name" />
+
+                <LinearLayout
+                    android:id="@+id/textView6"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:minHeight="?attr/actionBarSize"
+                    app:layout_constraintBottom_toBottomOf="@+id/toolbarMain"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent">
+
+                    <TextView
+                        android:id="@+id/textViewTitle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="clip_vertical"
+                        android:layout_weight="1"
+                        android:fontFamily="@font/work_sans_semibold"
+                        android:gravity="center_vertical"
+                        android:minHeight="?attr/actionBarSize"
+                        android:paddingStart="24dp"
+                        android:text="@string/app_name"
+                        android:textAlignment="gravity"
+                        android:textColor="@android:color/black"
+                        android:textSize="24sp" />
+
+                    <ImageButton
+                        android:id="@+id/imageButtonMenu"
+                        android:layout_width="48dp"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="center"
+                        android:layout_marginEnd="8dp"
+                        android:background="@android:color/transparent"
+                        android:padding="8dp"
+
+                        app:srcCompat="@drawable/ic_more_vert_white_24dp" />
+                </LinearLayout>
 
                 <TextView
                     android:id="@+id/textViewToggle"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:foregroundGravity="center"
-                    android:gravity="center"
-                    android:padding="16dp"
-                    android:textAlignment="center"
+                    android:paddingStart="24dp"
+                    android:textAlignment="viewStart"
                     android:textColor="@color/primaryTextColor"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toStartOf="@+id/floatingActionButtonToogle"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/toolbarMain" />
+                    app:layout_constraintTop_toBottomOf="@+id/textView6" />
 
                 <com.google.android.material.floatingactionbutton.FloatingActionButton
                     android:id="@+id/floatingActionButtonToogle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginBottom="8dp"
                     android:backgroundTint="@color/secondaryColor"
                     android:clickable="true"
                     app:backgroundTint="@color/secondaryDarkColor"
@@ -91,7 +133,6 @@
             android:id="@+id/recyclerViewAppList"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:layout_margin="16dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="1.0"
@@ -102,9 +143,10 @@
             android:id="@+id/textView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
             android:layout_marginTop="8dp"
             android:text="Choose Apps"
-            app:layout_constraintStart_toStartOf="@+id/cardViewToggle"
+            app:layout_constraintStart_toStartOf="@+id/recyclerViewAppList"
             app:layout_constraintTop_toBottomOf="@+id/cardViewToggle" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

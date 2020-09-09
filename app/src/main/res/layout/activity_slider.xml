@@ -14,14 +14,15 @@
         android:clickable="true"
         android:text="Got it!"
         android:textAlignment="center"
-        android:textColorHighlight="@color/secondaryDarkColor"
-        android:textColorLink="@color/secondaryColor"
-        android:visibility="gone"
-        app:backgroundTint="@color/secondaryColor"
+        android:textColor="@color/whiteColor"
+        android:textColorHighlight="@color/primaryDarkColor"
+        android:textColorLink="@color/primaryColor"
+        android:visibility="visible"
+        app:backgroundTint="@color/primaryColor"
         app:layout_constraintBottom_toBottomOf="@+id/ViewPagerSlider"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:rippleColor="@color/secondaryDarkColor" />
+        app:rippleColor="@color/primaryDarkColor" />
 
     <androidx.viewpager.widget.ViewPager
         android:id="@+id/ViewPagerSlider"

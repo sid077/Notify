@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.notify">
+    package="com.craft.notify">
 
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.WAKE_LOCK"/>
@@ -13,10 +13,10 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".activities.SliderActivity"
+        <activity android:name="com.craft.notify.activities.SliderActivity"
             android:theme="@style/SlidersTheme"></activity>
         <activity
-            android:name=".activities.SplashScreen"
+            android:name="com.craft.notify.activities.SplashScreen"
             android:theme="@style/SplashScreenTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -25,23 +25,38 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".activities.SettingsActivity"
+            android:name="com.craft.notify.activities.SettingsActivity"
             android:label="@string/title_activity_settings" />
-        <activity android:name=".activities.MainActivity"></activity>
-
+        <activity android:name="com.craft.notify.activities.MainActivity"></activity>
+        <receiver android:name=".recievers.TimeReciever">
+            <intent-filter>
+                <action android:name="TIME_RECIEVER"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+            </intent-filter>
+        </receiver>
+        <receiver android:name=".recievers.RemoveServiceReciever">
+            <intent-filter>
+                <category android:name="android.intent.category.DEFAULT"/>
+                <action android:name="TIME_STOP_SERVICE_RECEIVER"/>
+            </intent-filter>
+        </receiver>
+        <service android:name=".services.NotificationJobService"
+            android:permission="android.permission.BIND_JOB_SERVICE"
+            android:exported="true"
+            />
         <service
-            android:name=".NotificationServiceList"
+            android:name="com.craft.notify.NotificationServiceList"
             android:permission="android.permission.BIND_NOTIFICATION_LISTENER_SERVICE">
             <intent-filter>
                 <action android:name="android.service.notification.NotificationListenerService" />
             </intent-filter>
         </service>
-        <service android:name=".services.TTSService"
+        <service android:name="com.craft.notify.services.TTSService"
             />
-
+        <service android:name=".services.NotificationCollectorMonitorService"/>
 
         <receiver
-            android:name=".recievers.NotifyReciever"
+            android:name="com.craft.notify.recievers.NotifyReciever"
             android:enabled="true"
             android:exported="true">
             <intent-filter>
@@ -50,7 +65,7 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </receiver>
-        <receiver android:name=".recievers.ScreenStateReciever" android:enabled="true"
+        <receiver android:name="com.craft.notify.recievers.ScreenStateReciever" android:enabled="true"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.SCREEN_OFF"/>
@@ -60,7 +75,7 @@
         </receiver>
 
         <service
-            android:name=".services.SpeakMessageService"
+            android:name="com.craft.notify.services.SpeakMessageService"
             android:permission="android.permission.BIND_JOB_SERVICE" />
 
         <meta-data

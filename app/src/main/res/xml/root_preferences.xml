@@ -13,7 +13,7 @@
             app:defaultValue="true"
             app:key="isSelectedAppsEnabled"
 
-            app:summary="Use announcer only for selected apps" />
+            app:summary="@string/selceted_only" />
     </PreferenceCategory>
     <PreferenceCategory app:title="@string/header_announcer_settings">
         <Preference
@@ -21,7 +21,7 @@
                     app:fragment="com.example.notify.fragments.VoiceListFragment"
                     app:title="@string/title_change_announcer"
                    />
-        <com.example.notify.fragments.SleepPreference
+        <com.craft.notify.fragments.SleepPreference
             android:key="sleepTime"
             app:title="@string/title_sleep_time_settings"
             app:summary="@string/summary_sleep_time_settings"
@@ -29,7 +29,7 @@
         <SwitchPreferenceCompat
             app:key="translator"
             app:title="Speak in native language"
-            app:summary="I'll speak in the selected language"
+            app:summary="@string/lang"
             app:defaultValue="false"/>
 
 
@@ -39,7 +39,7 @@
             android:max="100"
             app:min="1"
             app:defaultValue="50"
-            app:summary="Tell me how fast I should speak "/>
+            app:summary="@string/speed"/>
 
     </PreferenceCategory>
     <PreferenceCategory app:title="Info">
@@ -47,13 +47,15 @@
             app:summary="@string/privacy_info"
             app:key="info1"/>
         <Preference app:title="Contact"
+            app:summary="@string/dev_contact"
             app:key="contact">
 
 
         </Preference>
         <EditTextPreference
             app:key="comments"
-            app:title="Review the app"/>
+            app:title="Review the app"
+            app:summary="Share you're thoughts. "/>
     </PreferenceCategory>
 
 

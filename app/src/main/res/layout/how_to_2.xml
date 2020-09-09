@@ -4,19 +4,29 @@
     android:id="@+id/frame_1"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:background="@drawable/frame_1"
-   >
+    android:background="@drawable/frame_1">
+
+    <ImageView
+        android:id="@+id/imageView3"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toTopOf="@+id/imageView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:src="@color/primaryColor"
+        tools:srcCompat="@color/primaryColor" />
 
     <ImageView
         android:id="@+id/imageView"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:src="@drawable/ssnew1"
         app:layout_constraintBottom_toTopOf="@+id/guideline10"
         app:layout_constraintEnd_toStartOf="@+id/guideline9"
         app:layout_constraintStart_toStartOf="@+id/guideline8"
         app:layout_constraintTop_toTopOf="@+id/guideline11"
-        app:srcCompat="@drawable/ssnew1"
-        android:src="@drawable/ssnew1"/>
+        app:srcCompat="@drawable/ssnew1" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline8"

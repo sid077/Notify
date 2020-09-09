@@ -8,6 +8,7 @@
         <item name="colorAccent">@color/secondaryColor</item>
         <item name="android:textColorPrimary">@color/secondaryTextColor</item>
         <item name="actionBarTheme">@style/AppBarTheme</item>
+
         <item name="colorControlNormal">@color/whiteColor</item>
 
 
@@ -18,6 +19,9 @@
         <item name="colorPrimary">@color/primaryColor</item>
         <item name="colorPrimaryDark">@color/primaryDarkColor</item>
         <item name="colorAccent">@color/secondaryColor</item>
+        <item name="android:textSize">24sp</item>
+        <item name="fontFamily">@font/work_sans_semibold</item>
+
 
 
     </style>
@@ -37,9 +41,6 @@
         <item name="colorPrimaryDark">@color/primaryDarkColor</item>
         <item name="colorControlNormal">@color/whiteColor</item>
 
-    </style>
-    <style name="DotsLightTheme" parent="Theme.MaterialComponents.DayNight.NoActionBar" >
-        <item name="android:tint">@color/whiteColor</item>
     </style>
 
 

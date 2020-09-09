@@ -1,29 +1,25 @@
 <resources>
     <string name="app_name">Notify</string>
-    <string name="msgwhatsapp">Sir, you have a new whatsapp message</string>
     <string name="title_activity_settings">Settings</string>
 
     <!-- Preference Titles -->
     <string name="notification_header">Notifications</string>
-    <string name="sync_header">Sync</string>
 
     <!-- Messages Preferences -->
-    <string name="signature_title">Your signature</string>
-    <string name="reply_title">Default reply action</string>
 
     <!-- Sync Preferences -->
-    <string name="sync_title">Sync email periodically</string>
-    <string name="attachment_title">Download incoming attachments</string>
-    <string name="attachment_summary_on">Automatically download attachments for incoming emails
-    </string>
-    <string name="attachment_summary_off">Only download attachments when manually requested</string>
     <string name="title_screenoff_settings">Announce only is screen is off</string>
     <string name="header_announcer_settings">Announcer settings</string>
     <string name="title_sleep_time_settings">Sleep time</string>
-    <string name="summary_sleep_time_settings">I will not disturb while you are asleep</string>
+    <string name="summary_sleep_time_settings">While you are asleep, nobody will disturb you.</string>
     <string name="title_change_announcer">Change Announcer</string>
     <string name="msg_info1">You\'re privacy is always protected</string>
-    <string name="toggle_main_off">I\'m on rest for now.\n Touch to switch announcer on</string>
-    <string name="toggle_main_on">Sit back and relax, I\'ll notify if notification comes.\n Touch to switch announcer off</string>
-    <string name="privacy_info">None of your notifications are stored by us</string>
+    <string name="toggle_main_off">Tap to toggle announcer.</string>
+    <string name="toggle_main_on">Tap to toggle announcer.</string>
+    <string name="privacy_info">None of your notifications are stored by the app.</string>
+    <string name="network_required">consistent internet connection is required</string>
+    <string name="speed">Tell me how fast the announcer should speak.</string>
+    <string name="dev_contact">Feel free to reach the developer.</string>
+    <string name="lang">Announcer will speak in the selected language.</string>
+    <string name="selceted_only">Use announcer only for selected apps</string>
 </resources>

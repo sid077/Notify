@@ -11,7 +11,7 @@
        android:width="100dp"
        android:height="100dp"
        android:gravity="center">
-      <bitmap android:src="@drawable/ic_launcher_round"/>
+      <bitmap android:src="@drawable/ic_splash_1"/>
    </item>
 
 </layer-list>

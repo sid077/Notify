@@ -1,14 +1,4 @@
 <resources>
     <!-- Reply Preference -->
-    <string-array name="announcer_entries">
-        <item>Alpha</item>
-        <item>Beta</item>
-        <item>Gamma</item>
-        <item>Delta</item>
-    </string-array>
 
-    <string-array name="reply_values">
-        <item>reply</item>
-        <item>reply_all</item>
-    </string-array>
 </resources>

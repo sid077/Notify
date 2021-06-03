@@ -1,19 +1,5 @@
 package com.craft.notify.activities;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-import androidx.cardview.widget.CardView;
-import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProvider;
-
-import androidx.preference.PreferenceManager;
-import androidx.recyclerview.widget.DividerItemDecoration;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.animation.Animator;
 import android.app.ActivityManager;
 import android.content.Context;
@@ -41,6 +27,19 @@ import android.view.animation.AnimationUtils;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.cardview.widget.CardView;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.preference.PreferenceManager;
+import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.craft.notify.NotificationServiceList;
 import com.craft.notify.R;
 import com.craft.notify.adapters.RecyclerAdapterAppList;
@@ -48,7 +47,6 @@ import com.craft.notify.listeners.RecyclerItemClickListener;
 import com.craft.notify.models.AppListPojo;
 import com.craft.notify.repositories.AppDatabase;
 import com.craft.notify.services.JobUtil;
-import com.craft.notify.services.NotificationCollectorMonitorService;
 import com.craft.notify.viewmodel.MainViewModel;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -69,37 +67,34 @@ import com.google.firebase.auth.FirebaseUser;
 import java.util.ArrayList;
 import java.util.List;
 
-;
-
 public class MainActivity extends AppCompatActivity {
-    RecyclerView recyclerViewAppList ;
-    MainViewModel viewModel ;
-    private AppDatabase database;
+    RecyclerView recyclerViewAppList;
+    MainViewModel viewModel;
     MainActivity activity = this;
     CardView cardViewToggle;
     TextView textViewToggle;
     float x;
     float y;
+    String uid;
+    private AppDatabase database;
     private boolean isColorSecondary;
-  //  private Switch switchToogleMain;
+    //  private Switch switchToogleMain;
     private FloatingActionButton fabToogle;
     private ConstraintLayout constraintLayoutMainCard;
     private Toolbar toolbar;
     private ImageButton imageButtonMenu;
-    private  TextView textViewTitle;
+    private TextView textViewTitle;
+    private FirebaseAnalytics firebaseAnalytics;
+    private FirebaseAuth firebaseAuth;
 
     public FirebaseAnalytics getFirebaseAnalytics() {
         return firebaseAnalytics;
     }
 
-    private FirebaseAnalytics firebaseAnalytics;
-    private FirebaseAuth firebaseAuth;
-    String uid;
-
     @Override
     protected void onResume() {
         super.onResume();
-        TransitionDrawable transitionDrawable = (TransitionDrawable) ((View)constraintLayoutMainCard).getBackground();
+        TransitionDrawable transitionDrawable = (TransitionDrawable) constraintLayoutMainCard.getBackground();
 
 
         if (isMyServiceRunning(NotificationServiceList.class)) {
@@ -115,20 +110,19 @@ public class MainActivity extends AppCompatActivity {
             // cardViewToggle.setCardBackgroundColor(getResources().getColor(R.color.secondaryColor));
 
 
-        }
-        else {
+        } else {
 
-        transitionDrawable.resetTransition();
+            transitionDrawable.resetTransition();
 
-        toolbar.setBackgroundColor(getColor(R.color.cardColor));
+            toolbar.setBackgroundColor(getColor(R.color.cardColor));
             int currentNightMode = getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
-            if(currentNightMode==Configuration.UI_MODE_NIGHT_NO){
+            if (currentNightMode == Configuration.UI_MODE_NIGHT_NO) {
                 toolbar.setTitleTextColor(Color.BLACK);
                 toolbar.setOverflowIcon(getDrawable(R.drawable.ic_more_vert_black_24dp));
                 textViewTitle.setTextColor(Color.BLACK);
                 imageButtonMenu.setImageDrawable(getDrawable(R.drawable.ic_more_vert_black_24dp));
 
-            }else {
+            } else {
                 toolbar.setTitleTextColor(Color.WHITE);
                 textViewTitle.setTextColor(Color.WHITE);
                 toolbar.setOverflowIcon(getDrawable(R.drawable.ic_more_vert_white_24dp));
@@ -138,56 +132,11 @@ public class MainActivity extends AppCompatActivity {
             }
 
 
-               // transitionDrawable.reverseTransition(1000);
+            textViewToggle.setText(R.string.toggle_main_off);
 
-
-
-          // transitionDrawable.reverseTransition(1000);
-           textViewToggle.setText(R.string.toggle_main_off);
-           // switchToogleMain.setChecked(false);
-            //cardViewToggle.setCardBackgroundColor(getResources().getColor(R.color.primaryColor));
-         //  textViewToggle.setTextColor(getResources().getColor(R.color.primaryTextColor));
-           textViewToggle.setTextColor(getColor(R.color.secondaryTextColor));
+            textViewToggle.setTextColor(getColor(R.color.secondaryTextColor));
         }
-//        switchToogleMain.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-//            @Override
-//            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-//                int startRad =0;
-//                Intent intent = new Intent(MainActivity.this, NotificationServiceList.class);
-//                int endRad = (int )Math.hypot(buttonView.getWidth(),buttonView.getHeight());
-//                Animator animator = ViewAnimationUtils.createCircularReveal(buttonView, (int)x, (int)y,startRad,endRad);
-//
-//                animator.setDuration(750).addListener(new Animator.AnimatorListener() {
-//                    @Override
-//                    public void onAnimationStart(Animator animation) {
-//
-//                    }
-//
-//                    @Override
-//                    public void onAnimationEnd(Animator animation) {
-//
-//
-//                    }
-//
-//                    @Override
-//                    public void onAnimationCancel(Animator animation) {
-//
-//                    }
-//
-//                    @Override
-//                    public void onAnimationRepeat(Animator animation) {
-//
-//                    }
-//                });
-//                animator.start();
-//
-//            }
-//        });
-       checkForUpdate();
-
-
-
-
+        checkForUpdate();
 
 
     }
@@ -206,9 +155,9 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         FirebaseApp.initializeApp(getApplicationContext());
         firebaseAnalytics = FirebaseAnalytics.getInstance(this);
-        firebaseAuth  = FirebaseAuth.getInstance();
+        firebaseAuth = FirebaseAuth.getInstance();
         JobUtil.scheduleJob(getApplicationContext());
-        Animation bottomUp = AnimationUtils.loadAnimation(getApplicationContext(),R.anim.bottom_up);
+        Animation bottomUp = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.bottom_up);
         ViewGroup hiddenPanel = findViewById(R.id.contraintMain);
 
         bottomUp.setDuration(750);
@@ -224,17 +173,15 @@ public class MainActivity extends AppCompatActivity {
         cardViewToggle = findViewById(R.id.cardViewToggle);
         textViewToggle = findViewById(R.id.textViewToggle);
         imageButtonMenu = findViewById(R.id.imageButtonMenu);
-        textViewTitle  = findViewById(R.id.textViewTitle);
-//        switchToogleMain = findViewById(R.id.switchToogleMain);
-//        switchToogleMain.setTextOn(getString(R.string.toggle_main_on));
-//        switchToogleMain.setTextOff(getString(R.string.toggle_main_off));
+        textViewTitle = findViewById(R.id.textViewTitle);
+
         constraintLayoutMainCard = findViewById(R.id.constraintLayout2);
         fabToogle = findViewById(R.id.floatingActionButtonToogle);
 //        if(!PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).getBoolean("isNewUser",false)){
 //        addCoachMark();
 //        }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            startForegroundService(new Intent(MainActivity.this,NotificationServiceList.class));
+            startForegroundService(new Intent(MainActivity.this, NotificationServiceList.class));
         }
 //        startService(new Intent(this, NotificationCollectorMonitorService.class));
 
@@ -242,23 +189,22 @@ public class MainActivity extends AppCompatActivity {
         cardViewToggle.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                x= event.getX();
+                x = event.getX();
                 y = event.getY();
                 return false;
             }
         });
 
 
-        RecyclerAdapterAppList adapterAppList = new RecyclerAdapterAppList(new ArrayList<AppListPojo>(),activity);
+        RecyclerAdapterAppList adapterAppList = new RecyclerAdapterAppList(new ArrayList<AppListPojo>(), activity);
 
 
-
-        viewModel =new  ViewModelProvider(this).get(MainViewModel.class);
+        viewModel = new ViewModelProvider(this).get(MainViewModel.class);
         //observer
         viewModel.getListMutableLiveData().observe(this, new Observer<List<AppListPojo>>() {
             @Override
             public void onChanged(List<AppListPojo> appListPojos) {
-                RecyclerAdapterAppList adapterAppList = new RecyclerAdapterAppList(appListPojos,activity);
+                RecyclerAdapterAppList adapterAppList = new RecyclerAdapterAppList(appListPojos, activity);
                 recyclerViewAppList.setAdapter(adapterAppList);
                 LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getApplicationContext());
                 recyclerViewAppList.setLayoutManager(linearLayoutManager);
@@ -274,39 +220,37 @@ public class MainActivity extends AppCompatActivity {
                 itemDecoration.setDrawable(insetDivider);
                 recyclerViewAppList.addItemDecoration(itemDecoration);
                 //recyclerViewAppList.getAdapter().notifyDataSetChanged();
-               // recyclerViewAppList.getRecycledViewPool().setMaxRecycledViews(TYPE_CAROUSEL,0);
+                // recyclerViewAppList.getRecycledViewPool().setMaxRecycledViews(TYPE_CAROUSEL,0);
             }
         });
 
-        recyclerViewAppList.addOnItemTouchListener(new RecyclerItemClickListener(getApplicationContext(),recyclerViewAppList, new RecyclerItemClickListener.OnItemClickListener() {
+        recyclerViewAppList.addOnItemTouchListener(new RecyclerItemClickListener(getApplicationContext(), recyclerViewAppList, new RecyclerItemClickListener.OnItemClickListener() {
             @Override
             public void onItemClick(View view, int posititon) {
-                Log.d("rv","singleTap");
-               SwitchMaterial aSwitch= recyclerViewAppList.getChildViewHolder(view).itemView.findViewById(R.id.switch1);
-                if(aSwitch.isChecked()){
+                Log.d("rv", "singleTap");
+                SwitchMaterial aSwitch = recyclerViewAppList.getChildViewHolder(view).itemView.findViewById(R.id.switch1);
+                if (aSwitch.isChecked()) {
                     aSwitch.setChecked(false);
-                    ((RecyclerAdapterAppList)recyclerViewAppList.getAdapter()).getAppListPojos().get(posititon).setState(0);
+                    ((RecyclerAdapterAppList) recyclerViewAppList.getAdapter()).getAppListPojos().get(posititon).setState(0);
 
-                }
-                else {
+                } else {
                     aSwitch.setChecked(true);
-                    ((RecyclerAdapterAppList)recyclerViewAppList.getAdapter()).getAppListPojos().get(posititon).setState(1);
+                    ((RecyclerAdapterAppList) recyclerViewAppList.getAdapter()).getAppListPojos().get(posititon).setState(1);
 
 
                 }
 
-                        updateAppInAppList(((RecyclerAdapterAppList)recyclerViewAppList.getAdapter()).getAppListPojos().get(posititon));
-
+                updateAppInAppList(((RecyclerAdapterAppList) recyclerViewAppList.getAdapter()).getAppListPojos().get(posititon));
 
 
             }
 
             @Override
             public void onLongItemClick(View view, int position) {
-                Log.d("rv","LongTap");
+                Log.d("rv", "LongTap");
             }
         }));
-        View.OnClickListener listener = v -> fabToogle.animate().rotation(360f*4).setDuration(1000).setListener(new Animator.AnimatorListener() {
+        View.OnClickListener listener = v -> fabToogle.animate().rotation(360f * 4).setDuration(1000).setListener(new Animator.AnimatorListener() {
             @Override
             public void onAnimationStart(Animator animation) {
                 Bundle bundle = new Bundle();
@@ -320,18 +264,15 @@ public class MainActivity extends AppCompatActivity {
             public void onAnimationEnd(Animator animation) {
 
                 Intent intent1 = new Intent(Settings.ACTION_NOTIFICATION_LISTENER_SETTINGS);
-//                        intent1.putExtra(Settings.EXTRA_APP_PACKAGE,"com.example.notify");
-//                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-//                            intent1.putExtra(Settings.EXTRA_CHANNEL_ID,NotificationServiceList.channelID);
-//                        }
-                if(isMyServiceRunning(NotificationServiceList.class)){
-                    stopService(new Intent(getApplicationContext(),NotificationServiceList.class));
+//
+                if (isMyServiceRunning(NotificationServiceList.class)) {
+                    stopService(new Intent(getApplicationContext(), NotificationServiceList.class));
                 }
                 startActivity(intent1);
-                if(!PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).getBoolean("isNewUser",false)){
-                 addCoachMark();
-                    PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).edit().putBoolean("isNewUser",true).apply();
-                     }
+                if (!PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).getBoolean("isNewUser", false)) {
+                    addCoachMark();
+                    PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).edit().putBoolean("isNewUser", true).apply();
+                }
 
             }
 
@@ -347,61 +288,7 @@ public class MainActivity extends AppCompatActivity {
         }).start();
         cardViewToggle.setOnClickListener(listener);
         fabToogle.setOnClickListener(listener);
-//        final GestureDetector gestureDetector = new GestureDetector(this, new GestureDetector.OnGestureListener() {
-//            @Override
-//            public boolean onDown(MotionEvent e) {
-//                return false;
-//            }
 //
-//            @Override
-//            public void onShowPress(MotionEvent e) {
-//
-//            }
-//
-//            @Override
-//            public boolean onSingleTapUp(MotionEvent e) {
-//                return false;
-//            }
-//
-//            @Override
-//            public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
-//                return false;
-//            }
-//
-//            @Override
-//            public void onLongPress(MotionEvent e) {
-//
-//            }
-//
-//            @Override
-//            public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
-//                return false;
-//            }
-//        });
-//        recyclerViewAppList.addOnItemTouchListener(new RecyclerView.OnItemTouchListener() {
-//            @Override
-//            public boolean onInterceptTouchEvent(@NonNull RecyclerView rv, @NonNull MotionEvent e) {
-//                View child =recyclerViewAppList.findChildViewUnder(e.getX(),e.getY());
-//                if(child!=null&&gestureDetector.onTouchEvent(e)) {
-//                    int pos = recyclerViewAppList.getChildLayoutPosition(child);
-//                    RecyclerAdapterAppList adapterAppList = (RecyclerAdapterAppList) rv.getAdapter();
-//                    updateAppInAppList(adapterAppList.getAppListPojos().get(pos));
-//                    Switch sw = child.findViewById(R.id.switch1);
-//
-//                }
-//                return false;
-//            }
-//
-//            @Override
-//            public void onTouchEvent(@NonNull RecyclerView rv, @NonNull MotionEvent e) {
-//
-//            }
-//
-//            @Override
-//            public void onRequestDisallowInterceptTouchEvent(boolean disallowIntercept) {
-//
-//            }
-//        });
         imageButtonMenu.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -415,26 +302,24 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void run() {
                 database = viewModel.getDatabaseInstance();
-              try {
-                  if(database.appListDBDao().getAllApps().size()==0)
-                      throw new NullPointerException();
-                  viewModel.setListMutableLiveData(database.appListDBDao().getAllApps());
+                try {
+                    if (database.appListDBDao().getAllApps().size() == 0)
+                        throw new NullPointerException();
+                    viewModel.setListMutableLiveData(database.appListDBDao().getAllApps());
 
 
-              }
-              catch (Exception e){
-                  Intent mainIntent = new Intent(Intent.ACTION_MAIN, null);
-                  mainIntent.addCategory(Intent.CATEGORY_LAUNCHER);
-                  List<ResolveInfo> pkgAppsList = getPackageManager().queryIntentActivities(mainIntent, 0);
-                  List<AppListPojo> appListPojoList = new ArrayList<>();
-                  for (int i = 0; i < pkgAppsList.size(); i++) {
-                      appListPojoList.add(new AppListPojo(pkgAppsList.get(i).activityInfo.packageName));
-                  }
-                  database.appListDBDao().insertAllApps(appListPojoList);
-                  viewModel.setListMutableLiveData(database.appListDBDao().getAllApps());
+                } catch (Exception e) {
+                    Intent mainIntent = new Intent(Intent.ACTION_MAIN, null);
+                    mainIntent.addCategory(Intent.CATEGORY_LAUNCHER);
+                    List<ResolveInfo> pkgAppsList = getPackageManager().queryIntentActivities(mainIntent, 0);
+                    List<AppListPojo> appListPojoList = new ArrayList<>();
+                    for (int i = 0; i < pkgAppsList.size(); i++) {
+                        appListPojoList.add(new AppListPojo(pkgAppsList.get(i).activityInfo.packageName));
+                    }
+                    database.appListDBDao().insertAllApps(appListPojoList);
+                    viewModel.setListMutableLiveData(database.appListDBDao().getAllApps());
 
-              }
-
+                }
 
 
             }
@@ -445,39 +330,27 @@ public class MainActivity extends AppCompatActivity {
                 .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull com.google.android.gms.tasks.Task<AuthResult> task) {
-                        if(task.isSuccessful()){
+                        if (task.isSuccessful()) {
                             uid = task.getResult().getUser().getUid();
 
-                            Log.d("Anonymous","signed in successfully");
+                            Log.d("Anonymous", "signed in successfully");
                             Bundle bundle = new Bundle();
                             bundle.putString(FirebaseAnalytics.Param.ITEM_ID, task.getResult().getUser().getUid());
                             bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "image");
                             firebaseAnalytics.logEvent(FirebaseAnalytics.Event.LOGIN, bundle);
-                        }else{
-                            Log.d("Anonymous","sign in  failed");
+                        } else {
+                            Log.d("Anonymous", "sign in  failed");
 
                         }
                     }
                 });
 
-//        Intent intent = new Intent(this, NotificationServiceList.class);
-//        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-//            startForegroundService(intent);
-//        }
-//        Intent mainIntent = new Intent(Intent.ACTION_MAIN, null);
-//        mainIntent.addCategory(Intent.CATEGORY_LAUNCHER);
-//        List<ResolveInfo> pkgAppsList = getPackageManager().queryIntentActivities( mainIntent, 0);
-//        List<AppListPojo> appListPojoList = new ArrayList<>();
-//        for(int i=0;i<pkgAppsList.size();i++){
-//           appListPojoList.add(new AppListPojo(pkgAppsList.get(i).activityInfo));
-//        }
-
+//
     }
 
     private void addCoachMark() {
-       Intent intent = new Intent(this,SliderActivity.class);
-       startActivity(intent);
+        Intent intent = new Intent(this, SliderActivity.class);
+        startActivity(intent);
 
     }
 
@@ -487,12 +360,11 @@ public class MainActivity extends AppCompatActivity {
         new Thread(new Runnable() {
             @Override
             public void run() {
-               try {
-                   viewModel.setListMutableLiveData(database.appListDBDao().getAllApps());
-               }
-               catch (IllegalStateException e){
-                   e.printStackTrace();
-               }
+                try {
+                    viewModel.setListMutableLiveData(database.appListDBDao().getAllApps());
+                } catch (IllegalStateException e) {
+                    e.printStackTrace();
+                }
 
             }
         }).start();
@@ -503,7 +375,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if(database!=null)
+        if (database != null)
             database.close();
     }
 
@@ -512,13 +384,12 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void run() {
                 AppDatabase appDatabase;
-                if(database!=null){
+                if (database != null) {
                     appDatabase = database;
-                }
-                else {
+                } else {
                     appDatabase = viewModel.getDatabaseInstance();
                 }
-                if(appDatabase!=null){
+                if (appDatabase != null) {
                     appDatabase.appListDBDao().updateApp(appListPojo);
                 }
             }
@@ -527,13 +398,12 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        if(item.getItemId()==R.id.menuBtnSettings){
-            Intent intent = new Intent(getApplicationContext(),SettingsActivity.class);
+        if (item.getItemId() == R.id.menuBtnSettings) {
+            Intent intent = new Intent(getApplicationContext(), SettingsActivity.class);
             startActivity(intent);
-        }
-        else if(item.getItemId()==R.id.menuBtnHelp){
-            Intent intent = new Intent(getApplicationContext(),SliderActivity.class);
-            intent.putExtra("isFromHelp",true);
+        } else if (item.getItemId() == R.id.menuBtnHelp) {
+            Intent intent = new Intent(getApplicationContext(), SliderActivity.class);
+            intent.putExtra("isFromHelp", true);
             startActivity(intent);
         }
         return super.onOptionsItemSelected(item);
@@ -543,9 +413,10 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater menuInflater = getMenuInflater();
-        menuInflater.inflate(R.menu.main_appbar_menu,menu);
+        menuInflater.inflate(R.menu.main_appbar_menu, menu);
         return super.onCreateOptionsMenu(menu);
     }
+
     private boolean isMyServiceRunning(Class<?> serviceClass) {
         ActivityManager manager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
         for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
@@ -555,54 +426,42 @@ public class MainActivity extends AppCompatActivity {
         }
         return false;
     }
-//    private boolean stopRunningService(Class<?> serviceClass) {
-//        ActivityManager manager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
-//        for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
-//            if (serviceClass.getName().equals(service.service.getClassName())) {
-//                stopService(new Intent(getComponentName(x)));
-//                return true;
-//            }
-//        }
-//        return false;
-//    }
 
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode==12){
-            if(resultCode==RESULT_CANCELED){
+        if (requestCode == 12) {
+            if (resultCode == RESULT_CANCELED) {
                 finish();
 
-            }
-            else if(requestCode== ActivityResult.RESULT_IN_APP_UPDATE_FAILED){
+            } else if (requestCode == ActivityResult.RESULT_IN_APP_UPDATE_FAILED) {
                 checkForUpdate();
             }
         }
     }
 
     private void checkForUpdate() {
-        // Creates instance of the manager.
+
         AppUpdateManager appUpdateManager = AppUpdateManagerFactory.create(getApplicationContext());
 
-// Returns an intent object that you use to check for an update.
+
         Task<AppUpdateInfo> appUpdateInfoTask = appUpdateManager.getAppUpdateInfo();
 
-// Checks that the platform will allow the specified type of update.
         appUpdateInfoTask.addOnSuccessListener(appUpdateInfo -> {
             if (appUpdateInfo.updateAvailability() == UpdateAvailability.UPDATE_AVAILABLE
-                    // For a flexible update, use AppUpdateType.FLEXIBLE
+
                     && appUpdateInfo.isUpdateTypeAllowed(AppUpdateType.IMMEDIATE)) {
-                // Request the update.
+
                 try {
                     appUpdateManager.startUpdateFlowForResult(
-                            // Pass the intent that is returned by 'getAppUpdateInfo()'.
+
                             appUpdateInfo,
-                            // Or 'AppUpdateType.FLEXIBLE' for flexible updates.
+
                             AppUpdateType.IMMEDIATE,
-                            // The current activity making the update request.
+
                             this,
-                            // Include a request code to later monitor this update request.
+
                             12);
                 } catch (IntentSender.SendIntentException e) {
                     e.printStackTrace();

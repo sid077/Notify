@@ -46,6 +46,11 @@ public class TTSService extends Service implements TextToSpeech.OnInitListener,T
     private IBinder mBinder = new ServiceBinder();
     private Voice selectedVoice;
 
+    @Override
+    public void onUtteranceCompleted(String utteranceId) {
+
+    }
+
     public class ServiceBinder extends Binder {
        TTSService getService()
         {
@@ -68,19 +73,12 @@ public class TTSService extends Service implements TextToSpeech.OnInitListener,T
         settingSharedPreferences =  PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         reference = database.getReference();
       textToSpeech = new TextToSpeech(this,this);
-      //  reference.child(String.valueOf(Calendar.getInstance().get(Calendar.HOUR_OF_DAY)+Calendar.getInstance().get(Calendar.MINUTE))+Calendar.getInstance().get(Calendar.SECOND)).setValue("oncreate tts service");
-
 
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-       // AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
-       // Intent i = new Intent(this, RemoveServiceReciever.class);
-       // i.setAction("TIME_RECEIVER");
 
-//        PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplicationContext(),12,i,PendingIntent.FLAG_CANCEL_CURRENT);
-//        alarmManager.setAndAllowWhileIdle(AlarmManager.RTC_WAKEUP,18*3600*1000,pendingIntent);
 
         if(!intent.hasExtra("name")){
             return START_NOT_STICKY;
@@ -89,22 +87,12 @@ public class TTSService extends Service implements TextToSpeech.OnInitListener,T
             settingSharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         }
         string = intent.getStringExtra("name");
-     //   firebaseDatabase =FirebaseDatabase.getInstance();
-    //    reference.child(String.valueOf(Calendar.getInstance().get(Calendar.HOUR_OF_DAY)+Calendar.getInstance().get(Calendar.MINUTE))+Calendar.getInstance().get(Calendar.SECOND)).setValue("onstart Command tts service");
-        if(isinit&&textToSpeech!=null&&string!=null){
+     if(isinit&&textToSpeech!=null&&string!=null){
             textToSpeech.speak(string,TextToSpeech.QUEUE_ADD,null);
-      //      reference.child(String.valueOf(Calendar.getInstance().get(Calendar.HOUR_OF_DAY)+Calendar.getInstance().get(Calendar.MINUTE))+Calendar.getInstance().get(Calendar.SECOND)).setValue("spoken but not from on init");
 
         }
 
-//        mediaPlayer = MediaPlayer.create(getApplicationContext(), R.raw.pacman_death);
-//        try {
-//            mediaPlayer.prepare();
-//            mediaPlayer.start();
-//
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
+
         new  Handler().postDelayed(new Runnable() {
 
             @Override
@@ -126,14 +114,13 @@ public class TTSService extends Service implements TextToSpeech.OnInitListener,T
             }
             return;
         }
-//        textToSpeech.speak(string,TextToSpeech.QUEUE_ADD,null);
+
         Thread thread = new Thread(new Runnable() {
 
             @Override
             public void run() {
                 String  voiceName =  settingSharedPreferences.getString("announcerName","en-us-x-sfg#male_2-local");
-//
-//
+
                 Set<Voice> voices1 =textToSpeech.getVoices();
                 selectedVoice = textToSpeech.getVoice();
                 if(voices1!=null) {
@@ -155,7 +142,6 @@ public class TTSService extends Service implements TextToSpeech.OnInitListener,T
                     @Override
                     public void run() {
                         textToSpeech.setVoice(selectedVoice);
-                    //    reference.child(String.valueOf(Calendar.getInstance().get(Calendar.HOUR_OF_DAY)+Calendar.getInstance().get(Calendar.MINUTE))+Calendar.getInstance().get(Calendar.SECOND)).setValue(status);
                         int result= textToSpeech.setLanguage(Locale.US);
                         if(status==SUCCESS){
                             if(settingSharedPreferences!=null){
@@ -200,12 +186,7 @@ public class TTSService extends Service implements TextToSpeech.OnInitListener,T
     @Override
     public void onDestroy() {
         Log.d("onDestroyTTS service","called");
-     //   reference.child(String.valueOf(Calendar.getInstance().get(Calendar.HOUR_OF_DAY)+Calendar.getInstance().get(Calendar.MINUTE))+Calendar.getInstance().get(Calendar.SECOND)).setValue("tts service destroyed tts service");
-//        if(mediaPlayer!=null){
-//            mediaPlayer.stop();
-//            mediaPlayer.release();
-//        }
-    //    PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).edit().putString("spokenPackage","none");
+
         if(textToSpeech!=null){
             textToSpeech.stop();
             textToSpeech.shutdown();
@@ -213,10 +194,7 @@ public class TTSService extends Service implements TextToSpeech.OnInitListener,T
         super.onDestroy();
     }
 
-    @Override
-    public void onUtteranceCompleted(String utteranceId) {
-      //  onDestroy();
-    }
+
     public static boolean hasInternetConnection(final Context context) {
         final ConnectivityManager connectivityManager = (ConnectivityManager)context.
                 getSystemService(Context.CONNECTIVITY_SERVICE);

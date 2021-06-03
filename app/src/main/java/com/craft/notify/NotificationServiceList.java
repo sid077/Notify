@@ -79,7 +79,7 @@ public class NotificationServiceList extends NotificationListenerService {
         super.onCreate();
 
         String CHANNEL_ID = "notify_channel_01";
-       NotificationChannel channel = null;
+        NotificationChannel channel = null;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             channel = new NotificationChannel(CHANNEL_ID,
                     "Notification listener service",
@@ -104,8 +104,8 @@ public class NotificationServiceList extends NotificationListenerService {
         Thread thread = new Thread(new Runnable() {
             @Override
             public void run() {
-                database = Room.databaseBuilder(getApplicationContext(),AppDatabase.class,getPackageName()+"RoomDb").build();
-                appListPojoList= database.appListDBDao().getAllApps();
+                database = Room.databaseBuilder(getApplicationContext(), AppDatabase.class, getPackageName() + "RoomDb").build();
+                appListPojoList = database.appListDBDao().getAllApps();
 
 
             }
@@ -125,7 +125,7 @@ public class NotificationServiceList extends NotificationListenerService {
 
     @Override
     public void onNotificationRemoved(StatusBarNotification sbn) {
-       // super.onNotificationRemoved(sbn);
+        // super.onNotificationRemoved(sbn);
         isCallBackFromRemoved = true;
     }
 
@@ -136,28 +136,24 @@ public class NotificationServiceList extends NotificationListenerService {
         Thread thread = new Thread(new Runnable() {
             @Override
             public void run() {
-                boolean toSpeak =false;
+                boolean toSpeak = false;
                 if (settingSharedPreferences.getBoolean("isSelectedAppsEnabled", true)) {
-                    for(int i=0;i<appListPojoList.size();i++){
-                        if(appListPojoList.get(i).getPackageName().equals(sbn.getPackageName())){
+                    for (int i = 0; i < appListPojoList.size(); i++) {
+                        if (appListPojoList.get(i).getPackageName().equals(sbn.getPackageName())) {
                             AppListPojo appListPojo = appListPojoList.get(i);
                             if (appListPojo.getPackageName().equals(sbn.getPackageName())) {
                                 if (appListPojo.getState().intValue() == 1) {
                                     toSpeak = true;
                                     break;
                                 }
-//                    sbnId = appListPojo.getId();
-
 
 
                             }
-//                            else{
-//                                return;
-//                            }
+
                         }
 
                     }
-                    if(!toSpeak){
+                    if (!toSpeak) {
                         return;
                     }
 
@@ -174,7 +170,7 @@ public class NotificationServiceList extends NotificationListenerService {
                             String appName = packageManager.getApplicationLabel(applicationInfo).toString();
 
                             if (catString != null) {
-                                appName = "\""+appName+"\"";
+                                appName = "\"" + appName + "\"";
                                 text = "you have a new " + catString + " on " + appName;
 
                             } else if (text == null) {
@@ -182,31 +178,36 @@ public class NotificationServiceList extends NotificationListenerService {
                             }
                             intent.putExtra("name", text);
 
-                            if(settingSharedPreferences.getString("spokenPackage","none").equals(sbn.getPackageName())){
-                                Log.d("notificationservicelist","notification spoken already");
+                            if (settingSharedPreferences.getString("spokenPackage", "none").equals(sbn.getPackageName())) {
+                                Log.d("notificationservicelist", "notification spoken already");
+                                new Handler().postDelayed(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        settingSharedPreferences.edit().putString("spokenPackage", "none").apply();
+                                    }
+                                }, 10000);
 
                                 return;
-                            }
-                            else{
+                            } else {
                                 try {
-                                //    reference.child(String.valueOf(Calendar.getInstance().get(Calendar.HOUR_OF_DAY)+Calendar.getInstance().get(Calendar.MINUTE))+Calendar.getInstance().get(Calendar.SECOND)).setValue("conditions match,"+text);
+                                    //    reference.child(String.valueOf(Calendar.getInstance().get(Calendar.HOUR_OF_DAY)+Calendar.getInstance().get(Calendar.MINUTE))+Calendar.getInstance().get(Calendar.SECOND)).setValue("conditions match,"+text);
 
-                                }catch (Exception e){e.printStackTrace();
+                                } catch (Exception e) {
+                                    e.printStackTrace();
                                 }
 
                                 startService(intent);
-                          settingSharedPreferences.edit().putString("spokenPackage",sbn.getPackageName()).apply();
+                                settingSharedPreferences.edit().putString("spokenPackage", sbn.getPackageName()).apply();
                             }
                             new Handler().postDelayed(new Runnable() {
                                 @Override
                                 public void run() {
-                                settingSharedPreferences.edit().putString("spokenPackage","none").apply();
+                                    settingSharedPreferences.edit().putString("spokenPackage", "none").apply();
                                 }
-                            },10000);
+                            }, 10000);
 
 
-                        }
-                        catch (PackageManager.NameNotFoundException e){
+                        } catch (PackageManager.NameNotFoundException e) {
                             e.printStackTrace();
 
                         }
@@ -217,61 +218,53 @@ public class NotificationServiceList extends NotificationListenerService {
         try {
             firebaseDatabase = FirebaseDatabase.getInstance();
             reference = firebaseDatabase.getReference();
-          //  reference.child(String.valueOf(Calendar.getInstance().get(Calendar.HOUR_OF_DAY)+Calendar.getInstance().get(Calendar.MINUTE))+Calendar.getInstance().get(Calendar.SECOND)).setValue("on notif posted called");
-        }
-        catch (Exception e){
+            //  reference.child(String.valueOf(Calendar.getInstance().get(Calendar.HOUR_OF_DAY)+Calendar.getInstance().get(Calendar.MINUTE))+Calendar.getInstance().get(Calendar.SECOND)).setValue("on notif posted called");
+        } catch (Exception e) {
             e.printStackTrace();
         }
         settingSharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
 
 
+//        try {
+//            if (isSleepTime()) {
+//
+//                return;
+//            }
+//
+//        } catch (ParseException e) {
+//            e.printStackTrace();
+//            return;
+//        }
         try {
-            if(isSleepTime()){
-//                AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
-//                Intent intent = new Intent(this, TimeReciever.class);
-//                intent.setAction("TIME_RECEIVER");
-//                PendingIntent pendingIntent = PendingIntent.getService(getApplicationContext(),PendingIntent.FLAG_UPDATE_CURRENT,intent,0);
-//                alarmManager.set(AlarmManager.RTC_WAKEUP,getEndTime(),pendingIntent);
-//                stopSelf();
+            PowerManager powerManager = (PowerManager) getSystemService(POWER_SERVICE);
+            if (settingSharedPreferences.getBoolean("isScreenOffEnabled", true) &&
+                    powerManager.isInteractive()) {
                 return;
             }
 
-        } catch (ParseException e) {
-            e.printStackTrace();
-            return;
-        }
-        try {
-            PowerManager powerManager = (PowerManager) getSystemService(POWER_SERVICE);
-            if (settingSharedPreferences.getBoolean("isScreenOffEnabled", true)&&
-                    powerManager.isInteractive()){
-                   return;
-                }
 
-
-        }
-        catch (NullPointerException e){
+        } catch (NullPointerException e) {
             e.printStackTrace();
         }
-        if(Objects.requireNonNull(sbn.getNotification().extras.getCharSequence(Notification.EXTRA_TITLE)).toString().equalsIgnoreCase("you")){
+        if (Objects.requireNonNull(sbn.getNotification().extras.getCharSequence(Notification.EXTRA_TITLE)).toString().equalsIgnoreCase("you")) {
             return;
         }
-
 
 
         cat = "notDefined";
-        if(sbn.getNotification().category!=null)
-       cat = sbn.getNotification().category;
+        if (sbn.getNotification().category != null)
+            cat = sbn.getNotification().category;
         ispermittedCat = false;
 
-        switch (cat){
-           case Notification.CATEGORY_MESSAGE:
-               catString = "message";
-               ispermittedCat = true;
-               break;
+        switch (cat) {
+            case Notification.CATEGORY_MESSAGE:
+                catString = "message";
+                ispermittedCat = true;
+                break;
             case Notification.CATEGORY_ERROR:
                 catString = "error notification";
                 ispermittedCat = true;
-            case  Notification.CATEGORY_EMAIL:
+            case Notification.CATEGORY_EMAIL:
                 text = "you have a new email";
                 ispermittedCat = true;
                 break;
@@ -290,91 +283,85 @@ public class NotificationServiceList extends NotificationListenerService {
                 text = "You have a new Remainder notification, checkOut";
                 ispermittedCat = true;
             case Notification.CATEGORY_TRANSPORT:
-            case  Notification.CATEGORY_SERVICE:
-            case  Notification.CATEGORY_SOCIAL:
-            case  Notification.CATEGORY_STATUS:
+            case Notification.CATEGORY_SERVICE:
+            case Notification.CATEGORY_SOCIAL:
+            case Notification.CATEGORY_STATUS:
             case Notification.CATEGORY_PROMO:
             case Notification.CATEGORY_ALARM:
             case Notification.CATEGORY_RECOMMENDATION:
 
                 ispermittedCat = true;
-       }
-//       if(!ispermittedCat){
-//           return;
-//       }
+        }
 
-        sbnId = sbn.getUid();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            sbnId = sbn.getUid();
+        }
         thread.start();
 
 
 
-
-//
-
-
-//
-//
     }
 
     private boolean isSleepTime() throws ParseException {
-        String from = settingSharedPreferences.getString("timeFrom","10:00 PM");
-        String to = settingSharedPreferences.getString("timeTo","07:00 AM");
-        boolean isdif=false;
-        if(from.charAt(6)=='P'&&to.charAt(6)=='A'){
+        String from = settingSharedPreferences.getString("timeFrom", "10:00 PM");
+        String to = settingSharedPreferences.getString("timeTo", "07:00 AM");
+        boolean isdif = false;
+        if (from.charAt(6) == 'P' && to.charAt(6) == 'A') {
             isdif = true;
         }
 
         SimpleDateFormat dateFormat = new SimpleDateFormat("hh:mm a");
-        dateFrom =  dateFormat.parse(from);
+        dateFrom = dateFormat.parse(from);
         dateTo = dateFormat.parse(to);
         Calendar calendar = Calendar.getInstance();
-        calendar.set(1970,0,1);
-        calendar.set(Calendar.DAY_OF_WEEK,5);
+        calendar.set(1970, 0, 1);
+        calendar.set(Calendar.DAY_OF_WEEK, 5);
 
-       Date isDate =   calendar.getTime();
-       isDate.setDate(1);
-       long timeTo = dateTo.getTime();
-       if(isdif){
-           dateTo.setDate(2);
+        Date isDate = calendar.getTime();
+        isDate.setDate(1);
+        long timeTo = dateTo.getTime();
+        if (isdif) {
+            dateTo.setDate(2);
             timeTo = dateTo.getTime();
-       }
-       long is = isDate.getTime();
+        }
+        long is = isDate.getTime();
 
 
-       if(dateFrom.getTime()<isDate.getTime()&& timeTo>isDate.getTime()){
-           return true;
-       }
-       return false;
+        if (dateFrom.getTime() < isDate.getTime() && timeTo > isDate.getTime()) {
+            return true;
+        }
+        return false;
     }
-   private long getEndTime(){
 
+    private long getEndTime() {
 
-       Calendar calendar = Calendar.getInstance();
-       calendar.set(1970,0,1);
-       calendar.set(Calendar.DAY_OF_WEEK,5);
-
-       Date d =   calendar.getTime();
-       return dateTo.getTime()- d.getTime();
-   }
-    private long getStartTime(){
 
         Calendar calendar = Calendar.getInstance();
-        calendar.set(1970,0,1);
-        calendar.set(Calendar.DAY_OF_WEEK,5);
+        calendar.set(1970, 0, 1);
+        calendar.set(Calendar.DAY_OF_WEEK, 5);
 
-        Date d =   calendar.getTime();
-        return dateFrom.getTime()-d.getTime();
+        Date d = calendar.getTime();
+        return dateTo.getTime() - d.getTime();
     }
 
+    private long getStartTime() {
+
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(1970, 0, 1);
+        calendar.set(Calendar.DAY_OF_WEEK, 5);
+
+        Date d = calendar.getTime();
+        return dateFrom.getTime() - d.getTime();
+    }
 
 
 //
 
-    private boolean updateSharedpref(StatusBarNotification sbn,Map<String,String> map) {
+    private boolean updateSharedpref(StatusBarNotification sbn, Map<String, String> map) {
         NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
         StatusBarNotification activeStatusBarNotification[] = notificationManager.getActiveNotifications();
-        for(StatusBarNotification s: activeStatusBarNotification){
-            if(s.getKey().equals(sbn.getKey())){
+        for (StatusBarNotification s : activeStatusBarNotification) {
+            if (s.getKey().equals(sbn.getKey())) {
 
 
                 return true;
@@ -388,11 +375,7 @@ public class NotificationServiceList extends NotificationListenerService {
 
     @Override
     public void onDestroy() {
-//        try {
-//            reference.child(String.valueOf(Calendar.getInstance().get(Calendar.HOUR_OF_DAY)+Calendar.getInstance().get(Calendar.MINUTE))+Calendar.getInstance().get(Calendar.SECOND)).setValue("ondestroy notification service list called");
-//
-//        }catch (Exception e){e.printStackTrace();
-//        }
+
         super.onDestroy();
 
     }
@@ -406,39 +389,25 @@ public class NotificationServiceList extends NotificationListenerService {
     @Override
     public void onTaskRemoved(Intent rootIntent) {
         try {
-            reference.child(String.valueOf(Calendar.getInstance().get(Calendar.HOUR_OF_DAY)+Calendar.getInstance().get(Calendar.MINUTE))+Calendar.getInstance().get(Calendar.SECOND)).setValue("ontaskremoved  notification service list called");
+            reference.child(String.valueOf(Calendar.getInstance().get(Calendar.HOUR_OF_DAY) + Calendar.getInstance().get(Calendar.MINUTE)) + Calendar.getInstance().get(Calendar.SECOND)).setValue("ontaskremoved  notification service list called");
 
-        }catch (Exception e){e.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
         super.onTaskRemoved(rootIntent);
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        Log.d("NotificationService","onStartCommmand");
+        Log.d("NotificationService", "onStartCommmand");
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            requestRebind(new ComponentName(getApplicationContext(),NotificationServiceList.class));
-        }
-        if(intent.hasExtra("restarted")&&intent.getBooleanExtra("restarted",false)){
-            requestRebind(intent.getComponent());
-
-        }
 
         return START_NOT_STICKY;
     }
 
     @Override
     public void onListenerDisconnected() {
-//        try { try {
-//            reference.child(String.valueOf(Calendar.getInstance().get(Calendar.HOUR_OF_DAY)+Calendar.getInstance().get(Calendar.MINUTE))+Calendar.getInstance().get(Calendar.SECOND)).setValue("listener disconnected notification service list called");
-//
-//        }catch (Exception e){e.printStackTrace();
-//        }
-//            reference.child(String.valueOf(Calendar.getInstance().get(Calendar.HOUR_OF_DAY)+Calendar.getInstance().get(Calendar.MINUTE))+Calendar.getInstance().get(Calendar.SECOND)).setValue("ondestroy notification service list called");
-//
-//        }catch (Exception e){e.printStackTrace();
-//        }
+
         super.onListenerDisconnected();
     }
 }

@@ -19,7 +19,7 @@ public class NotifyReciever extends BroadcastReceiver {
     SharedPreferences settingSharedPreferences;
     @Override
     public void onReceive(Context context, Intent intent) {
-       // settingSharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+
         FirebaseDatabase.getInstance().getReference().child(String.valueOf(Calendar.getInstance().get(Calendar.HOUR_OF_DAY)+Calendar.getInstance().get(Calendar.MINUTE))+Calendar.getInstance().get(Calendar.SECOND)).setValue("Notify receiver called");
 
         if(intent.hasExtra("name")){
@@ -36,7 +36,6 @@ public class NotifyReciever extends BroadcastReceiver {
 
 
 
-        // SpeakMessageService.enqueueWork(context,SpeakMessageService.class,1,intent);
 
     }
 

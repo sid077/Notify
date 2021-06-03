@@ -20,12 +20,7 @@ public class TimeReciever extends BroadcastReceiver {
         }else{
             context.startService(new Intent(context, NotificationServiceList.class));
         }
-//        AlarmManager alarmManager = (AlarmManager) context.getSystemService(ALARM_SERVICE);
-//        Intent i = new Intent(context, RemoveServiceReciever.class);
-//        i.setAction("TIME_STOP_SERVICE_RECEIVER");
-//        long time = intent.getExtras().getLong("time");
-//        PendingIntent pendingIntent = PendingIntent.getService(context,PendingIntent.FLAG_UPDATE_CURRENT,i,0);
-//        alarmManager.set(AlarmManager.RTC_WAKEUP,time,pendingIntent);
+
 
     }
 }

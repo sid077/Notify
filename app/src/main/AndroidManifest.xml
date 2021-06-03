@@ -74,9 +74,6 @@
             </intent-filter>
         </receiver>
 
-        <service
-            android:name="com.craft.notify.services.SpeakMessageService"
-            android:permission="android.permission.BIND_JOB_SERVICE" />
 
         <meta-data
             android:name="preloaded_fonts"

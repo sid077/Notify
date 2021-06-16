@@ -37,6 +37,7 @@ import com.craft.notify.services.TTSService;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+import java.security.spec.ECField;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -49,7 +50,7 @@ import java.util.Stack;
 public class NotificationServiceList extends NotificationListenerService {
 
     private TextToSpeech textToSpeech;
-    private boolean isSpoke = false;
+    private final boolean isSpoke = false;
     private SharedPreferences sharedPreferences;
 
     private List<AppListPojo> appListPojoList;
@@ -246,9 +247,14 @@ public class NotificationServiceList extends NotificationListenerService {
         } catch (NullPointerException e) {
             e.printStackTrace();
         }
-        if (Objects.requireNonNull(sbn.getNotification().extras.getCharSequence(Notification.EXTRA_TITLE)).toString().equalsIgnoreCase("you")) {
-            return;
+        try{
+            if (Objects.requireNonNull(sbn.getNotification().extras.getCharSequence(Notification.EXTRA_TITLE)).toString().equalsIgnoreCase("you")) {
+                return;
+            }
+        }catch (Exception e){
+            e.printStackTrace();
         }
+
 
 
         cat = "notDefined";
@@ -327,10 +333,7 @@ public class NotificationServiceList extends NotificationListenerService {
         long is = isDate.getTime();
 
 
-        if (dateFrom.getTime() < isDate.getTime() && timeTo > isDate.getTime()) {
-            return true;
-        }
-        return false;
+        return dateFrom.getTime() < isDate.getTime() && timeTo > isDate.getTime();
     }
 
     private long getEndTime() {
@@ -359,7 +362,7 @@ public class NotificationServiceList extends NotificationListenerService {
 
     private boolean updateSharedpref(StatusBarNotification sbn, Map<String, String> map) {
         NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-        StatusBarNotification activeStatusBarNotification[] = notificationManager.getActiveNotifications();
+        StatusBarNotification[] activeStatusBarNotification = notificationManager.getActiveNotifications();
         for (StatusBarNotification s : activeStatusBarNotification) {
             if (s.getKey().equals(sbn.getKey())) {
 

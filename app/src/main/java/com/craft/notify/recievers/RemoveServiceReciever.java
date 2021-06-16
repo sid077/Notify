@@ -54,10 +54,7 @@ public class RemoveServiceReciever extends BroadcastReceiver {
         Date isDate =   calendar.getTime();
         isDate.setDate(1);
 
-        if(dateFrom.getTime()<isDate.getTime()&& dateTo.getTime()>isDate.getTime()){
-            return true;
-        }
-        return false;
+        return dateFrom.getTime() < isDate.getTime() && dateTo.getTime() > isDate.getTime();
     }
     private long getStartTime(){
 

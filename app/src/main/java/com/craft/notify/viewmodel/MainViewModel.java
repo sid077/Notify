@@ -15,7 +15,7 @@ import java.util.List;
 
 public class MainViewModel extends AndroidViewModel {
   private   Context context;
-  private MutableLiveData<List<AppListPojo>> listMutableLiveData = new MutableLiveData<>();
+  private final MutableLiveData<List<AppListPojo>> listMutableLiveData = new MutableLiveData<>();
     public MainViewModel(@NonNull Application application) {
         super(application);
         this. context = application.getApplicationContext();

@@ -24,10 +24,6 @@ import androidx.preference.PreferenceManager;
 import com.craft.notify.recievers.RemoveServiceReciever;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.ml.naturallanguage.FirebaseNaturalLanguage;
-import com.google.firebase.ml.naturallanguage.translate.FirebaseTranslateLanguage;
-import com.google.firebase.ml.naturallanguage.translate.FirebaseTranslator;
-import com.google.firebase.ml.naturallanguage.translate.FirebaseTranslatorOptions;
 
 import java.util.Calendar;
 import java.util.Locale;
@@ -43,7 +39,7 @@ public class TTSService extends Service implements TextToSpeech.OnInitListener,T
     public boolean isspoken,isinit;
     private MediaPlayer mediaPlayer;
     private SharedPreferences settingSharedPreferences;
-    private IBinder mBinder = new ServiceBinder();
+    private final IBinder mBinder = new ServiceBinder();
     private Voice selectedVoice;
 
     @Override
@@ -149,29 +145,30 @@ public class TTSService extends Service implements TextToSpeech.OnInitListener,T
                                 speed = (speed/100)*2;
                                 textToSpeech.setSpeechRate(speed);
                             }
+                            textToSpeech.speak(string,TextToSpeech.QUEUE_FLUSH,null);
 
 
                             if(result != TextToSpeech.LANG_NOT_SUPPORTED&&result!=TextToSpeech.LANG_MISSING_DATA&&string!=null){
-                                if(PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).getBoolean("translator",false)){
-                                    FirebaseTranslatorOptions translatorOptions = new FirebaseTranslatorOptions.Builder()
-                                            .setSourceLanguage(FirebaseTranslateLanguage.EN)
-                                            .setTargetLanguage(FirebaseTranslateLanguage.languageForLanguageCode(selectedVoice.getLocale().getLanguage()))
-                                            .build();
-                                    FirebaseTranslator translator = FirebaseNaturalLanguage.getInstance()
-                                            .getTranslator(translatorOptions);
-                                    translator.translate(string).addOnFailureListener(e -> textToSpeech.speak(string,TextToSpeech.QUEUE_ADD,null))
-                                            .addOnSuccessListener(s -> {
-
-                                                textToSpeech.speak(s,TextToSpeech.QUEUE_ADD,null);
-
-                                            });
-
-
-                                }
-                                else {
-                                    textToSpeech.speak(string, TextToSpeech.QUEUE_ADD, null);
-                                }
-                                isinit =true;
+//                                if(PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).getBoolean("translator",false)){
+//                                    FirebaseTranslatorOptions translatorOptions = new FirebaseTranslatorOptions.Builder()
+//                                            .setSourceLanguage(FirebaseTranslateLanguage.EN)
+//                                            .setTargetLanguage(FirebaseTranslateLanguage.languageForLanguageCode(selectedVoice.getLocale().getLanguage()))
+//                                            .build();
+//                                    FirebaseTranslator translator = FirebaseNaturalLanguage.getInstance()
+//                                            .getTranslator(translatorOptions);
+//                                    translator.translate(string).addOnFailureListener(e -> textToSpeech.speak(string,TextToSpeech.QUEUE_ADD,null))
+//                                            .addOnSuccessListener(s -> {
+//
+//                                                textToSpeech.speak(s,TextToSpeech.QUEUE_ADD,null);
+//
+//                                            });
+//
+//
+//                                }
+//                                else {
+//                                    textToSpeech.speak(string, TextToSpeech.QUEUE_ADD, null);
+//                                }
+//                                isinit =true;
                             }
                         }
                     }

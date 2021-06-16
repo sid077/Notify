@@ -51,13 +51,7 @@ import com.craft.notify.viewmodel.MainViewModel;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.switchmaterial.SwitchMaterial;
-import com.google.android.play.core.appupdate.AppUpdateInfo;
-import com.google.android.play.core.appupdate.AppUpdateManager;
-import com.google.android.play.core.appupdate.AppUpdateManagerFactory;
-import com.google.android.play.core.install.model.ActivityResult;
-import com.google.android.play.core.install.model.AppUpdateType;
-import com.google.android.play.core.install.model.UpdateAvailability;
-import com.google.android.play.core.tasks.Task;
+
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.auth.AuthResult;
@@ -136,7 +130,7 @@ public class MainActivity extends AppCompatActivity {
 
             textViewToggle.setTextColor(getColor(R.color.secondaryTextColor));
         }
-        checkForUpdate();
+
 
 
     }
@@ -434,40 +428,40 @@ public class MainActivity extends AppCompatActivity {
         if (requestCode == 12) {
             if (resultCode == RESULT_CANCELED) {
                 finish();
-
-            } else if (requestCode == ActivityResult.RESULT_IN_APP_UPDATE_FAILED) {
-                checkForUpdate();
             }
+//            } else if (requestCode == ActivityResult.RESULT_IN_APP_UPDATE_FAILED) {
+//                checkForUpdate();
+//            }
         }
     }
 
-    private void checkForUpdate() {
-
-        AppUpdateManager appUpdateManager = AppUpdateManagerFactory.create(getApplicationContext());
-
-
-        Task<AppUpdateInfo> appUpdateInfoTask = appUpdateManager.getAppUpdateInfo();
-
-        appUpdateInfoTask.addOnSuccessListener(appUpdateInfo -> {
-            if (appUpdateInfo.updateAvailability() == UpdateAvailability.UPDATE_AVAILABLE
-
-                    && appUpdateInfo.isUpdateTypeAllowed(AppUpdateType.IMMEDIATE)) {
-
-                try {
-                    appUpdateManager.startUpdateFlowForResult(
-
-                            appUpdateInfo,
-
-                            AppUpdateType.IMMEDIATE,
-
-                            this,
-
-                            12);
-                } catch (IntentSender.SendIntentException e) {
-                    e.printStackTrace();
-                }
-            }
-        });
-
-    }
+//    private void checkForUpdate() {
+//
+//        AppUpdateManager appUpdateManager = AppUpdateManagerFactory.create(getApplicationContext());
+//
+//
+//        Task<AppUpdateInfo> appUpdateInfoTask = appUpdateManager.getAppUpdateInfo();
+//
+//        appUpdateInfoTask.addOnSuccessListener(appUpdateInfo -> {
+//            if (appUpdateInfo.updateAvailability() == UpdateAvailability.UPDATE_AVAILABLE
+//
+//                    && appUpdateInfo.isUpdateTypeAllowed(AppUpdateType.IMMEDIATE)) {
+//
+//                try {
+//                    appUpdateManager.startUpdateFlowForResult(
+//
+//                            appUpdateInfo,
+//
+//                            AppUpdateType.IMMEDIATE,
+//
+//                            this,
+//
+//                            12);
+//                } catch (IntentSender.SendIntentException e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//        });
+//
+//    }
 }

@@ -21,16 +21,18 @@
                     app:fragment="com.example.notify.fragments.VoiceListFragment"
                     app:title="@string/title_change_announcer"
                    />
-        <com.craft.notify.fragments.SleepPreference
-            android:key="sleepTime"
-            app:title="@string/title_sleep_time_settings"
-            app:summary="@string/summary_sleep_time_settings"
-            android:defaultValue="90" />
-        <SwitchPreferenceCompat
-            app:key="translator"
-            app:title="Speak in native language"
-            app:summary="@string/lang"
-            app:defaultValue="false"/>
+<!--        <com.craft.notify.fragments.SleepPreference-->
+<!--            android:defaultValue="90"-->
+<!--            android:key="sleepTime"-->
+<!--            android:visibility="gone"-->
+<!--            app:summary="@string/summary_sleep_time_settings"-->
+<!--            app:title="@string/title_sleep_time_settings" />-->
+<!--        <SwitchPreferenceCompat-->
+<!--            android:visibility="gone"-->
+<!--            app:defaultValue="false"-->
+<!--            app:key="translator"-->
+<!--            app:summary="@string/lang"-->
+<!--            app:title="Speak in native language" />-->
 
 
         <SeekBarPreference

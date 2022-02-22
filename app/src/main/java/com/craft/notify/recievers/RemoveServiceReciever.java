@@ -36,8 +36,6 @@ public class RemoveServiceReciever extends BroadcastReceiver {
         }
         PendingIntent pendingIntent = PendingIntent.getService(context,PendingIntent.FLAG_UPDATE_CURRENT,intent,0);
         intent1.putExtra("time",getStartTime());
-       // alarmManager.set(AlarmManager.RTC_WAKEUP,getEndTime(),pendingIntent);
-
 
     }
     private boolean isSleepTime(Context context) throws ParseException {

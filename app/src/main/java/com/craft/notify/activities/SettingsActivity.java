@@ -157,7 +157,6 @@ public class SettingsActivity extends AppCompatActivity {
                     FirebaseDatabase database = FirebaseDatabase.getInstance();
                     DatabaseReference reference = database.getReference();
                     reference.child("reviews").child(UUID.randomUUID().toString()).setValue(String.valueOf(newValue));
-                  //  FirebaseDatabase.getInstance().getReference().child("reviews").child(UUID.randomUUID().toString()).child(String.valueOf(newValue));
                     try {
                         ((SettingsActivity) getActivity()).firebaseAnalytics.setUserProperty("review", String.valueOf(newValue));
                     }
@@ -174,8 +173,7 @@ public class SettingsActivity extends AppCompatActivity {
             seekBar.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
                 @Override
                 public boolean onPreferenceChange(Preference preference, Object newValue) {
-                  //  PreferenceManager.getDefaultSharedPreferences(getActivity().getApplicationContext()).edit().putInt("speed",(Integer)newValue);
-                    textToSpeech = new TextToSpeech(getContext(), new TextToSpeech.OnInitListener() {
+                   textToSpeech = new TextToSpeech(getContext(), new TextToSpeech.OnInitListener() {
                         @Override
                         public void onInit(int status) {
                             float val = ((Integer) newValue).floatValue();
@@ -196,15 +194,6 @@ public class SettingsActivity extends AppCompatActivity {
             });
 
 
-//            sleepTimePref.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
-//                @Override
-//                public boolean onPreferenceClick(Preference preference) {
-//                    DialogFragment fragment = SleepFragment.newInstance(preference);
-//                    getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.settings,fragment).addToBackStack("SleepTimeFrag").commit();
-//
-//                    return true;
-//                }
-//            });
         }
 
     }

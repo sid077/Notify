@@ -15,8 +15,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import java.util.Calendar;
 
 public class NotifyReciever extends BroadcastReceiver {
-    TextToSpeech textToSpeech;
-    SharedPreferences settingSharedPreferences;
+
     @Override
     public void onReceive(Context context, Intent intent) {
 
@@ -25,7 +24,7 @@ public class NotifyReciever extends BroadcastReceiver {
         if(intent.hasExtra("name")){
             Log.d("reciever notification",intent.getStringExtra("name"));
         }
-       // spellNotification("new Notification",context);
+
         Log.d("reciever ","called");
         Intent intent1 = new Intent(context, TTSService.class);
         intent1.putExtra("name",intent.getStringExtra("name"));

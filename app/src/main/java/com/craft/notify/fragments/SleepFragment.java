@@ -80,7 +80,7 @@ public class SleepFragment extends PreferenceDialogFragmentCompat implements Tim
         } catch (ParseException e) {
             e.printStackTrace();
         }
-       // calendar = new GregorianCalendar();
+
         if(timeFrom!= null){
             editTextFrom.setText(timeFrom);
 
@@ -144,7 +144,7 @@ public class SleepFragment extends PreferenceDialogFragmentCompat implements Tim
 
                Date isDate =   calendar.getTime();
                long time = dateFrom.getTime()-isDate.getTime();
-               //alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP,time,pendingIntent);
+
            } catch (ParseException e) {
                e.printStackTrace();
            }

@@ -34,10 +34,8 @@ import static android.media.AudioRecord.SUCCESS;
 public class TTSService extends Service implements TextToSpeech.OnInitListener,TextToSpeech.OnUtteranceCompletedListener {
     TextToSpeech textToSpeech;
     private String string;
-    FirebaseDatabase firebaseDatabase;
     private DatabaseReference reference;
     public boolean isspoken,isinit;
-    private MediaPlayer mediaPlayer;
     private SharedPreferences settingSharedPreferences;
     private final IBinder mBinder = new ServiceBinder();
     private Voice selectedVoice;
@@ -68,7 +66,7 @@ public class TTSService extends Service implements TextToSpeech.OnInitListener,T
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         settingSharedPreferences =  PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         reference = database.getReference();
-      textToSpeech = new TextToSpeech(this,this);
+        textToSpeech = new TextToSpeech(this,this);
 
     }
 
@@ -149,27 +147,7 @@ public class TTSService extends Service implements TextToSpeech.OnInitListener,T
 
 
                             if(result != TextToSpeech.LANG_NOT_SUPPORTED&&result!=TextToSpeech.LANG_MISSING_DATA&&string!=null){
-//                                if(PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).getBoolean("translator",false)){
-//                                    FirebaseTranslatorOptions translatorOptions = new FirebaseTranslatorOptions.Builder()
-//                                            .setSourceLanguage(FirebaseTranslateLanguage.EN)
-//                                            .setTargetLanguage(FirebaseTranslateLanguage.languageForLanguageCode(selectedVoice.getLocale().getLanguage()))
-//                                            .build();
-//                                    FirebaseTranslator translator = FirebaseNaturalLanguage.getInstance()
-//                                            .getTranslator(translatorOptions);
-//                                    translator.translate(string).addOnFailureListener(e -> textToSpeech.speak(string,TextToSpeech.QUEUE_ADD,null))
-//                                            .addOnSuccessListener(s -> {
-//
-//                                                textToSpeech.speak(s,TextToSpeech.QUEUE_ADD,null);
-//
-//                                            });
-//
-//
-//                                }
-//                                else {
-//                                    textToSpeech.speak(string, TextToSpeech.QUEUE_ADD, null);
-//                                }
-//                                isinit =true;
-                            }
+                       }
                         }
                     }
                 });

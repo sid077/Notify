@@ -51,11 +51,6 @@ public class VoiceListFragment extends PreferenceFragmentCompat{
     MainViewModel viewModel;
     SettingsActivity settingsActivity;
 
-    //        @Override
-//    protected void onPrepareDialogBuilder(final AlertDialog.Builder builder) {
-//        super.onPrepareDialogBuilder(builder);
-//
-//    }
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View v= inflater.inflate(R.layout.list_voices,container,false);

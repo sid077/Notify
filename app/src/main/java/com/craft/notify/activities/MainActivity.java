@@ -72,7 +72,7 @@ public class MainActivity extends AppCompatActivity {
     String uid;
     private AppDatabase database;
     private boolean isColorSecondary;
-    //  private Switch switchToogleMain;
+
     private FloatingActionButton fabToogle;
     private ConstraintLayout constraintLayoutMainCard;
     private Toolbar toolbar;
@@ -101,7 +101,6 @@ public class MainActivity extends AppCompatActivity {
             toolbar.setBackgroundColor(getColor(R.color.primaryColor));
             imageButtonMenu.setImageDrawable(getDrawable(R.drawable.ic_more_vert_white_24dp));
             textViewToggle.setText(getString(R.string.toggle_main_on));
-            // cardViewToggle.setCardBackgroundColor(getResources().getColor(R.color.secondaryColor));
 
 
         } else {
@@ -130,7 +129,6 @@ public class MainActivity extends AppCompatActivity {
 
             textViewToggle.setTextColor(getColor(R.color.secondaryTextColor));
         }
-
 
 
     }
@@ -171,15 +169,11 @@ public class MainActivity extends AppCompatActivity {
 
         constraintLayoutMainCard = findViewById(R.id.constraintLayout2);
         fabToogle = findViewById(R.id.floatingActionButtonToogle);
-//        if(!PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).getBoolean("isNewUser",false)){
-//        addCoachMark();
-//        }
+//
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             startForegroundService(new Intent(MainActivity.this, NotificationServiceList.class));
         }
-//        startService(new Intent(this, NotificationCollectorMonitorService.class));
-
-
+//
         cardViewToggle.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
@@ -213,8 +207,7 @@ public class MainActivity extends AppCompatActivity {
                 DividerItemDecoration itemDecoration = new DividerItemDecoration(getApplicationContext(), DividerItemDecoration.VERTICAL);
                 itemDecoration.setDrawable(insetDivider);
                 recyclerViewAppList.addItemDecoration(itemDecoration);
-                //recyclerViewAppList.getAdapter().notifyDataSetChanged();
-                // recyclerViewAppList.getRecycledViewPool().setMaxRecycledViews(TYPE_CAROUSEL,0);
+
             }
         });
 
@@ -239,7 +232,7 @@ public class MainActivity extends AppCompatActivity {
 
             }
 
-            @Override
+
             public void onLongItemClick(View view, int position) {
                 Log.d("rv", "LongTap");
             }
@@ -429,39 +422,9 @@ public class MainActivity extends AppCompatActivity {
             if (resultCode == RESULT_CANCELED) {
                 finish();
             }
-//            } else if (requestCode == ActivityResult.RESULT_IN_APP_UPDATE_FAILED) {
-//                checkForUpdate();
-//            }
+
         }
     }
 
-//    private void checkForUpdate() {
-//
-//        AppUpdateManager appUpdateManager = AppUpdateManagerFactory.create(getApplicationContext());
-//
-//
-//        Task<AppUpdateInfo> appUpdateInfoTask = appUpdateManager.getAppUpdateInfo();
-//
-//        appUpdateInfoTask.addOnSuccessListener(appUpdateInfo -> {
-//            if (appUpdateInfo.updateAvailability() == UpdateAvailability.UPDATE_AVAILABLE
-//
-//                    && appUpdateInfo.isUpdateTypeAllowed(AppUpdateType.IMMEDIATE)) {
-//
-//                try {
-//                    appUpdateManager.startUpdateFlowForResult(
-//
-//                            appUpdateInfo,
-//
-//                            AppUpdateType.IMMEDIATE,
-//
-//                            this,
-//
-//                            12);
-//                } catch (IntentSender.SendIntentException e) {
-//                    e.printStackTrace();
-//                }
-//            }
-//        });
-//
-//    }
+
 }

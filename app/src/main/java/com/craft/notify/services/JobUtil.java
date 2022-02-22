@@ -13,10 +13,7 @@ public class JobUtil {
         JobInfo.Builder builder = new JobInfo.Builder(0, serviceComponent);
         builder.setMinimumLatency(8*3600*1000); // wait at least
         builder.setOverrideDeadline(10*3600 * 1000);
-
-
-
-             builder.setRequiresDeviceIdle(true);
+        builder.setRequiresDeviceIdle(true);
         builder.setRequiresCharging(false);
         JobScheduler jobScheduler = context.getSystemService(JobScheduler.class);
         jobScheduler.schedule(builder.build());

@@ -54,21 +54,12 @@ public class RecyclerAdapterAppList extends RecyclerView.Adapter<RecyclerAdapter
             ApplicationInfo applicationInfo = context.getPackageManager().getApplicationInfo(name,0);
             holder.textViewAppName.setText(context.getPackageManager().getApplicationLabel(applicationInfo));
             holder.icon.setImageDrawable(context.getPackageManager().getApplicationIcon(name));
-           // holder.icon.setImageResource(applicationInfo.icon);
+
         } catch (PackageManager.NameNotFoundException e) {
             e.printStackTrace();
         }
-        int ind = name.lastIndexOf('.');
 
 
-
-//        holder.aSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-//            @Override
-//            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-//                appListPojos.get(position).setState(isChecked?1:0);
-//                mainActivity.updateAppInAppList(appListPojos.get(position));
-//            }
-//        });
 
     }
 

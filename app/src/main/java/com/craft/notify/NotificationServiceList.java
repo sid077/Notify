@@ -190,12 +190,7 @@ public class NotificationServiceList extends NotificationListenerService {
 
                                 return;
                             } else {
-                                try {
-                                    //    reference.child(String.valueOf(Calendar.getInstance().get(Calendar.HOUR_OF_DAY)+Calendar.getInstance().get(Calendar.MINUTE))+Calendar.getInstance().get(Calendar.SECOND)).setValue("conditions match,"+text);
 
-                                } catch (Exception e) {
-                                    e.printStackTrace();
-                                }
 
                                 startService(intent);
                                 settingSharedPreferences.edit().putString("spokenPackage", sbn.getPackageName()).apply();
@@ -225,17 +220,6 @@ public class NotificationServiceList extends NotificationListenerService {
         }
         settingSharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
 
-
-//        try {
-//            if (isSleepTime()) {
-//
-//                return;
-//            }
-//
-//        } catch (ParseException e) {
-//            e.printStackTrace();
-//            return;
-//        }
         try {
             PowerManager powerManager = (PowerManager) getSystemService(POWER_SERVICE);
             if (settingSharedPreferences.getBoolean("isScreenOffEnabled", true) &&
@@ -358,7 +342,7 @@ public class NotificationServiceList extends NotificationListenerService {
     }
 
 
-//
+
 
     private boolean updateSharedpref(StatusBarNotification sbn, Map<String, String> map) {
         NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
